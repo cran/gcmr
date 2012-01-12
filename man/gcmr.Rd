@@ -2,10 +2,10 @@
 \alias{gcmr}
 \alias{gcmr.fit}
 \title{
-Fitting Gaussian Copula Marginal Regression Models by Maximum (Simulated) Likelihood
+Fitting Gaussian Copula Marginal Regression Models by Maximum (Simulated) Likelihood.
 }
 \description{
-Fits Gaussian copula marginal regression models described in Masarotto and Varin (2011) by maximum (simulated) likelihood.
+Fits Gaussian copula marginal regression models by maximum (simulated) likelihood.   
 }
 \usage{
 
@@ -67,11 +67,13 @@ list of options passed to function \code{\link{gcmr.options}}.
 }
 
 \details{
-For binomial marginals specified by \code{bn.marg} the response is specified as a two-column matrix with the columns giving the numbers of successes and failures.  
+Gaussian copula marginal regression models (Song, 2000; Masarotto and Varin, 2011) provide a flexible general framework for modelling dependent responses of any type. Gaussian copulas combine the simplicity of interpretation in marginal modelling with the flexibility in the specification of the dependence structure in multivariate normal models. 
+
+This package contains \R functions related to the paper Masarotto and Varin (2011). The main function is \code{\link{gcmr}} that fits Gaussian copula marginal regression models. Inference is performed through a likelihood approach. Computation of the exact likelihood is possible only for continuous responses, otherwise the likelihood function is approximated by importance sampling. See Masarotto and Varin (2011) for details.
+
+For binomial marginals specified by \code{bn.marg} the response is specified as a factor when the first level denotes failure and all others success or as a two-column matrix with the columns giving the numbers of successes and failures. 
 
 \code{gcmr.fit} is the workhorse function: it is not normally called directly but can be more efficient where the response vector and design matrix have already been calculated.
-
-Computation of the exact likelihood is possible only for continuous responses, otherwise the likelihood function is approximated by importance sampling. See Masarotto and Varin (2011) for details. 
 }
 \value{
 An object of class \code{"gcmr"} with the following components:
@@ -96,6 +98,8 @@ Functions \code{\link{coefficients}}, \code{\link{logLik}}, \code{\link{vcov.gcm
 }
 \references{
 Masarotto, G. and Varin, C. (2011). Gaussian copula marginal regression. Preprint. 
+
+Song, P. X.-K. (2000). Multivariate dispersion models generated from Gaussian copula. \emph{Scandinavian Journal of Statistics} \bold{27}, 305--320.
 }
 \author{
 Guido Masarotto and Cristiano Varin.

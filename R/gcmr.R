@@ -266,6 +266,10 @@ print.gcmr <- function (x, digits = max(3, getOption("digits") - 3), k = 2 ,...)
     invisible(x)
 }
 
+## summary/print to be improved in future
+summary.gcmr <- function(object, ...)
+  print.gcmr(object)
+
 ## note: method=interval is hidden
 residuals.gcmr <- function (object, type=c("conditional","marginal"),
                           method=c("random","mid"),...) {
@@ -320,8 +324,15 @@ plotint <- function(r) {
     for (i in 1:length(tm)) lines(c(tm[i],tm[i]),r[i,])
 }
 
-profile.gcmr <- function(fitted , which , low , up , npoints = 10 , display = TRUE , alpha = 0.05, ... ) {
+profile.gcmr <- function(fitted , which , low = NULL , up = NULL, npoints = 10 , display = TRUE , alpha = 0.05, ... ) {
     if ( !inherits( fitted , "gcmr" ) ) stop("first argument must be a mr object")
+    if(is.null(low) || is.null(up)){
+      this.se <- se(fitted)[which]
+      if(is.null(low))
+        low <- coef(fitted)[which]-3*this.se
+      if(is.null(up))
+        up <- coef(fitted)[which]+3*this.se
+    }
     points <- seq( low , up , length = npoints )
     prof <- function(x,which,fitted) {
         fitted$fixed[which] <- x

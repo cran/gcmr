@@ -47,11 +47,21 @@ bn.marg <- function(link = "logit") {
     }
     ans$npar <- function(x) NCOL(x)
     ans$dp <- function(y, x, offset, beta) {
+        if(NCOL(y)==1){
+          y <- as.factor(y)
+          y <- y!=levels(y)[1L]
+          y <- cbind(y, 1-y)
+        } 
         mu <- fm$linkinv( x %*% beta + offset )
         cbind(dbinom( y[,1] , y[,1]+y[,2], mu ) ,
               pbinom( y[,1] , y[,1]+y[,2] , mu ) )
     }
     ans$sim <- function(u, y, x, offset, beta) {
+        if(NCOL(y)==1){
+          y <- as.factor(y)
+          y <- y!=levels(y)[1L]
+          y <- cbind(y, 1-y)
+        } 
         mu <- fm$linkinv( x %*% beta + offset )
         sim <- qbinom( u, y[,1]+y[,2] , mu )
         cbind( sim, y[,1]+y[,2]-sim )
@@ -120,58 +130,7 @@ nb.marg <- function(link = "log" ) {
     ans
 }
 
-## Skew-normal marginal
-sn.marg <- function( link="identity" ) {
-    if ( !require(sn) ) stop("This requires package sn")  
-    fm <- gaussian( substitute( link ) ) ##  ;-)
-    eps <- sqrt(.Machine$double.eps)
-    ans <- list()
-    ans$start <- function(y, x, offset) {
-        ## "centered" sn parameterization
-        ## plus further parameterization for avoiding parameters constrains
-        ## Starting point is taken from sn.ml
-        qrX <- qr(x)
-        r <- qr.resid(qrX, y-offset)
-        s <- sqrt(sum(r^2)/length(y))
-        gamma1 <- sum(r^3)/(length(y) * s^3)
-        if (abs(gamma1) > 0.99 ) gamma1 <- sign(gamma1) * 0.99
-        ans <- c(qr.coef(qrX, y-offset), log(s), log((gamma1+0.995)/(0.995-gamma1)) )
-        names(ans) <- c(dimnames(as.matrix(x))[[2L]],"log.scale", "logit.shape")
-        ans
-    }
-    ans$npar <- function(x) NCOL(x)+2
-    ans$dp <- function(y, x, offset, beta ) {
-        p <- NCOL(x)
-        n <- length(y)
-        ## back transformation
-        beta[p+1] <- exp(beta[p+1])
-        beta[p+2] <- exp(beta[p+2])
-        beta[p+2] <- 0.995*(beta[p+2]-1)/(beta[p+2]+1)
-        ## now go back to "direct" parameterization
-        beta <- cp.to.dp( beta ) 
-        mu <- fm$linkinv( x %*% beta[1:p] + offset )
-        scale <- beta[p+1]
-        alpha <- beta[p+2] 
-        cbind(dsn( y, mu, scale, alpha ) ,
-              psn( y, mu, scale, alpha) )
-    }
-    ans$sim <- function( u, y, x, offset, beta){
-        p <- NCOL(x)
-        ## back transformation
-        beta[p+1] <- exp(beta[p+1])
-        beta[p+2] <- exp(beta[p+2])
-        beta[p+2] <- 0.995*(beta[p+2]-1)/(beta[p+2]+1)
-        ## now go back to "direct" parameterization
-        beta <- cp.to.dp( beta ) 
-        mu <- fm$linkinv( x %*% beta[1:p] + offset )
-        scale <- beta[p+1]
-        alpha <- beta[p+2] 
-        qsn( u, mu, scale, alpha )
-    }
-    ans$type <- "numeric"
-    class(ans) <- "marginal.gcmr"
-    ans
-}
+ 
 
 
  

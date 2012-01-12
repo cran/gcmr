@@ -1,0 +1,21 @@
+citHeader("To cite gcmr in publications use:")
+
+citEntry(entry = "TechReport",
+  title        = "Gaussian Copula Marginal Regression",
+  author       = personList(as.person("Guido Masarotto"),
+		   as.person("Cristiano Varin")),  
+  institution  = "Technical Report DAIS, Universit\\\'a Ca' Foscari, Venice",
+  year         = "2011",
+  type         = "Technical Report",
+  number       = "2011-9",
+  url	       = "http://www.unive.it/media/allegato/DIP/SAmbInfStat/Ricerca/RapportiTecnici/DAIS-2011-9.pdf",
+  
+  textVersion  = 
+  paste("Guido Masarotto and Cristiano Varin (2011).", 
+	"Gaussian Copula Marginal Regression.",
+ 	"Technical Report 2011-9.",
+ 	"Technical Report Dais, Universita' Ca' Foscari Venice.",
+	"URL http://www.unive.it/media/allegato/DIP/SAmbInfStat/Ricerca/RapportiTecnici/DAIS-2011-9.pdf"),
+	
+  header       = "If you use gcmr(), please cite:"
+)

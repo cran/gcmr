@@ -11,7 +11,6 @@ At the moment, the following are implemented:
 \code{\link{bn.marg}} \tab binomial margins. \cr
 \code{\link{ps.marg}} \tab Poisson margins. \cr 
 \code{\link{nb.marg}} \tab negative binomial margins. \cr
-\code{\link{sn.marg}} \tab skew-normal margins.  
 }
 }
 \references{
@@ -25,7 +24,6 @@ Guido Masarotto and Cristiano Varin.
   \code{\link{bn.marg}},
   \code{\link{ps.marg}}, 
   \code{\link{nb.marg}},
-  \code{\link{sn.marg}}
 }
 \keyword{regression}
 \keyword{nonlinear}

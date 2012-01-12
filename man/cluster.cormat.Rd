@@ -27,7 +27,7 @@ a character string specifying the correlation structure. At the moment, the foll
 An object of class \code{\link{cormat.gcmr}} representing a correlation matrix for longitudinal or clustered data.
 }
 \details{
-The correlation matrices are inherited from the \code{\link{nlme}} package.
+The correlation matrices are inherited from the \code{\link{nlme}} package (Pinheiro and Bates, 2000).
 }
 \references{
 Masarotto, G. and Varin, C. (2011). Gaussian copula regression models. Preprint.

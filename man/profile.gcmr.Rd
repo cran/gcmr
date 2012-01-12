@@ -7,7 +7,7 @@ Profile likelihood for Gaussian Copula Marginal Regression Models
 Computes the profile likelihood for a fitted Gaussian copula marginal regression model.
 }
 \usage{
-\method{profile}{gcmr}(fitted, which, low, up, npoints = 10, 
+\method{profile}{gcmr}(fitted, which, low = NULL, up = NULL, npoints = 10, 
         display = TRUE, alpha = 0.05, ...)
 }
 \arguments{
@@ -18,10 +18,10 @@ a fitted Gaussian copula marginal regression model of class \code{\link{gcmr}}.
 the index of the parameter which should be profiled. 
 }
   \item{low}{
-the lower limit used in computation of the profile likelihood.
+the lower limit used in computation of the profile likelihood. If this is \code{NULL}, then the lower limit is set equal to the estimate minus three times its standard error.
 }
   \item{up}{
-the upper limit used in computation of the profile likelihood.
+the upper limit used in computation of the profile likelihood. If this is \code{NULL}, then the lower limit is set equal to the estimate plus three times its standard error.
 }
   \item{npoints}{
 number of points used in computation of the profile likelihood. Default is \code{10}.

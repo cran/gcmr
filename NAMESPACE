@@ -1,13 +1,19 @@
-useDynLib(gcmr,csampler,bsolver)
-export(gs.marg, ps.marg, bn.marg, nb.marg, sn.marg,
+useDynLib(gcmr, csampler, bsolver)
+importFrom(sandwich, estfun, bread)
+export(gs.marg, ps.marg, bn.marg, nb.marg, 
        ind.cormat, arma.cormat, cluster.cormat, matern.cormat,
-       gcmr, gcmr.fit, se, gcmr.options, 
-	  hausman, estfun.gcmr, bread.gcmr)
-S3method(coef, gcmr)
-S3method(logLik, gcmr)
-S3method(print, gcmr)
-S3method(profile, gcmr)
-S3method(residuals, gcmr)
-S3method(vcov, gcmr)
+       gcmr, gcmr.fit, gcmr.options,
+	 hausman, se)
+S3method("bread", "gcmr")
+S3method("coef", "gcmr")
+S3method("estfun", "gcmr")
+S3method("logLik", "gcmr")
+S3method("print", "gcmr")
+S3method("profile", "gcmr")
+S3method("residuals", "gcmr")
+S3method("summary", "gcmr")
+S3method("vcov", "gcmr")
+
+
 
 

@@ -17,6 +17,8 @@ ind.cormat <- function() {
 
 ## arma(p,q) correlation for time-series
 arma.cormat <- function( p , q ) {
+    if(p==0 && q==0)
+      return( ind.cormat() )
     start <- rep( 0 , p+q )
     names(start) <- c(if ( p ) paste("ar",1:p,sep="") else NULL ,
                       if ( q ) paste("ma",1:q,sep="") else NULL )
@@ -70,32 +72,16 @@ cluster.cormat <- function(id, type=c("ar1", "ma1", "exch", "unstr")) {
 }
 
 ## Matern correlation for spatial data
-## Warninig: geoR without namespace!
-## matern function extrapoled from geoR...
-## D is a distance matrix, k is the smoothing parameter
-matern.cormat <- function(D, k=0.5){
+## D is a distance matrix, alpha is the smoothing parameter
+matern.cormat <- function(D, alpha=0.5){
   ans <- list()
   ans$npar <- 1
-  start <-median(D) 
+  start <- median(D) 
   names(start) <- c("tau")
   ans$start <- function( marginal, beta ) start
   ans$chol <- function( tau, not.na ){
     if( any(tau<=0) ) return( NULL )
-    ## matern function from geoR
-    matern <- function (u, phi, kappa) 
-    {
-        if (is.vector(u)) 
-            names(u) <- NULL
-        if (is.matrix(u)) 
-            dimnames(u) <- list(NULL, NULL)
-        uphi <- u/phi
-        uphi <- ifelse(u > 0, (((2^(-(kappa - 1)))/ifelse(0, Inf, gamma(kappa))) * (uphi^kappa) * besselK(x = uphi, nu = kappa)), 1)
-        uphi[u > 600 * phi] <- 0
-        return(uphi)
-    }
-    ## when geoR will have a namespace...
-    ## S <- geoR:::matern(D, tau, k)
-    S <- matern(D, tau, k)
+    S <- geoR:::matern(D, tau, alpha)
     q <- try(chol(S),silent=TRUE)
     if( inherits(q,"try-error") ) NULL else q
   }
