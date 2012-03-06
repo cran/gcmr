@@ -11,7 +11,8 @@ cluster.cormat(id, type = c("ar1", "ma1", "exch", "unstr"))
 }
 \arguments{
   \item{id}{
-subject id.
+subject id. This is a vector of the same lenght of the number of observations. Please note that data must be
+sorted in way that observations from the same cluster are contiguous.
 }
   \item{type}{
 a character string specifying the correlation structure. At the moment, the following are implemented: 

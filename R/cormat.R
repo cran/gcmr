@@ -45,6 +45,9 @@ arma.cormat <- function( p , q ) {
 ## can be missing
 cluster.cormat <- function(id, type=c("ar1", "ma1", "exch", "unstr")) { 
     type <- match.arg(type)
+    if(!length(rle(id)$values)==length(unique(id)))
+      stop("length of 'id' must be the same of the number of observations and data must be
+sorted in way that observations from the same cluster are contiguous")
     ng <- 1:length(unique(id))
     if (!(length(ng)>1)) stop("only one strata")
     ans <- list(type=type,id=id)

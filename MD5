@@ -1,13 +1,13 @@
-f0816a3dd7475cec796be86c1c4c220b *DESCRIPTION
+34f5afe06cbb18a523c9aaa5fce1c397 *DESCRIPTION
 c6e9e12acda3bd79b59994b9ace6594b *NAMESPACE
-0b65f97706c41e158024ad423b80ef45 *R/cormat.R
+4bc41c264db87a43f721124be75a9500 *R/cormat.R
 f5f3f6017087e1b741d918bf16c0cd3c *R/gcmr.R
 2d19ea9394408357b8be26771a68ae0a *R/marginals.R
 5b708ed66f82f87f51026858c61580df *data/polio.RData
 1da7ba8777566e5d10da81d0cff5f0b5 *data/scotland.RData
 4bcff6ac789c8a4d71247b1c8f27f09a *inst/CITATION
 7d818d3c3036cd6c243dbe62a23530db *man/arma.cormat.Rd
-1645e3b62cebe481f84860c8fdb51c43 *man/cluster.cormat.Rd
+4f61ea44d2741bf17907475ced79d9f3 *man/cluster.cormat.Rd
 769f7640044e2357538fc4541f6d9d64 *man/cormat.gcmr.Rd
 8df56c0cfbcf392b8553cb2e6ec5f8b9 *man/estfun.gcmr.Rd
 02d1a01cbe45b835ec1610a0bcd6def4 *man/gcmr-package.Rd
