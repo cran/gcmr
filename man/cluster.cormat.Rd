@@ -7,7 +7,7 @@ Gaussian Copula Regression with Longitudinal/Clustered Data Correlation Matrix
 Sets longitudinal/clustered data correlation in Gaussian copula regression models.
 }
 \usage{
-cluster.cormat(id, type = c("ar1", "ma1", "exch", "unstr"))
+cluster.cormat(id, type = c("independence", "ar1", "ma1", "exchangeable", "unstructured"))
 }
 \arguments{
   \item{id}{
@@ -17,10 +17,11 @@ sorted in way that observations from the same cluster are contiguous.
   \item{type}{
 a character string specifying the correlation structure. At the moment, the following are implemented: 
 \tabular{ll}{
+\code{independent} \tab working independence. \cr
 \code{ar1} \tab autoregressive of order 1. \cr
 \code{ma1} \tab moving average of order 1. \cr
-\code{exch} \tab exchangeable. \cr
-\code{unstr} \tab unstructured.
+\code{exchangeable} \tab exchangeable. \cr
+\code{unstructured} \tab unstructured.
 }
 }
 }

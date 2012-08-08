@@ -1,9 +1,10 @@
 useDynLib(gcmr, csampler, bsolver)
 importFrom(sandwich, estfun, bread)
-export(gs.marg, ps.marg, bn.marg, nb.marg, 
+export(gaussian.marg, poisson.marg, binomial.marg,
+	 negbin.marg, Gamma.marg, weibull.marg,
+	 gs.marg, ps.marg, bn.marg, nb.marg, 
        ind.cormat, arma.cormat, cluster.cormat, matern.cormat,
-       gcmr, gcmr.fit, gcmr.options,
-	 hausman, se)
+       gcmr, gcmr.fit, gcmr.options, se)
 S3method("bread", "gcmr")
 S3method("coef", "gcmr")
 S3method("estfun", "gcmr")

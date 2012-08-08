@@ -51,7 +51,7 @@ llik <- function(m, irep, magic=NA) {
 
 # Workhorse which is called from gcmr.fit and profile.gcmr
 truefit <- function(x) {
-    ## saving/restoring the random seed
+    # saving/restoring the random seed
     if ( x$marginal$type == "integer" ) {
         if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
             seed.keep <- get(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
@@ -62,9 +62,13 @@ truefit <- function(x) {
     theta <- x$fixed
     theta[ifree] <- x$estimate[ifree]
     big <- -sqrt(.Machine$double.xmax)
-    for ( irep in x$options$nrep ) {
-        log.lik <- llik(x,irep,big)
-        ans <- x$options$opt( theta[ifree] , log.lik )
+    nrep <- if(x$marginal$type=="numeric") 1 else x$options$nrep
+    for ( i in 1:length(nrep) ) {
+        log.lik <- llik(x,nrep[i],big)
+        if( i!=length(nrep) ) # no warnings until last optimization
+          ans <- suppressWarnings( x$options$opt( theta[ifree] , log.lik ) )
+        else
+          ans <- x$options$opt( theta[ifree] , log.lik )
         theta[ifree] <- ans$estimate
     }
     names(theta) <- names(x$estimate)
@@ -138,7 +142,14 @@ gcmr <- function(formula, data, subset, offset, contrasts=NULL, marginal, cormat
 
     ## next lines partially "inherited" from function glm
     call <- match.call()
+    if( is.function( marginal ) )
+     marginal <- marginal()
+    if(!missing(data))
+      cormat <- eval(call$cormat,data,parent.frame())
+    if( is.function( cormat ) )
+      cormat <- cormat()
     if ( !inherits( marginal , "marginal.gcmr" ) ) stop("Unknown marginal")
+    
     if ( !inherits( cormat , "cormat.gcmr" ) ) stop("Unknown cormat")
     if (missing(data)) 
         data <- environment(formula)
@@ -173,10 +184,17 @@ gcmr <- function(formula, data, subset, offset, contrasts=NULL, marginal, cormat
 }
 
 gcmr.fit <- function(x=rep(1,NROW(y)), y, offset=rep(0,NROW(y)), marginal, cormat, start, fixed, options=gcmr.options()) {
+
+   if( is.function( marginal ) )
+     marginal <- marginal()
+   if( is.function( cormat ) )
+     cormat <- cormat()
     ## arguments check
     if ( !inherits( marginal , "marginal.gcmr" ) ) stop("Unknown marginal")
     if ( !inherits( cormat , "cormat.gcmr" ) ) stop("Unknown cormat")
-    ## mr object
+    ## gcmr object
+    if(exists("init", where=marginal))
+      marginal$init(y, x)  
     nb <- marginal$npar(x)
     ng <- cormat$npar
     not.na <- apply(cbind(y,x,offset),1,function(z) !any(is.na(z)))
@@ -324,13 +342,13 @@ plotint <- function(r) {
     for (i in 1:length(tm)) lines(c(tm[i],tm[i]),r[i,])
 }
 
-profile.gcmr <- function(fitted , which , low = NULL , up = NULL, npoints = 10 , display = TRUE , alpha = 0.05, ... ) {
+profile.gcmr <- function(fitted , which , low , up, npoints = 10 , display = TRUE , alpha = 0.05, ... ) {
     if ( !inherits( fitted , "gcmr" ) ) stop("first argument must be a mr object")
     if(is.null(low) || is.null(up)){
       this.se <- se(fitted)[which]
-      if(is.null(low))
+      if(missing(low))
         low <- coef(fitted)[which]-3*this.se
-      if(is.null(up))
+      if(missing(up))
         up <- coef(fitted)[which]+3*this.se
     }
     points <- seq( low , up , length = npoints )

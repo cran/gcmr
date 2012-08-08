@@ -112,14 +112,14 @@ Guido Masarotto and Cristiano Varin.
 ## of Monte Carlo replications.
 ## Polio data. Marginal negative binomial model with ARMA(2,1) correlation matrix.
 data(polio)
-gcmr(y~., data=polio, marginal=nb.marg(), cormat=arma.cormat(2,1), 
+gcmr(y~., data=polio, marginal=negbin.marg, cormat=arma.cormat(2,1), 
      options=list(seed=71271, nrep=100))
 ## Scotland lip cancer data. 
 ## Marginal negative binomial model with Matern correlation matrix.
 data(scotland)
 D.scotland <- spDists(cbind(scotland$longitude, scotland$latitude), longlat=TRUE)
 gcmr(observed~offset(log(expected))+AFF+I(latitude/100), data=scotland, 
-     marginal=nb.marg(), cormat=matern.cormat(D.scotland), 
+     marginal=negbin.marg, cormat=matern.cormat(D.scotland), 
      options=list(seed=71271, nrep=100))
 }
 \keyword{regression}

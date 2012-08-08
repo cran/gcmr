@@ -47,7 +47,7 @@ It is appropriate to inspect several sets of randomized quantile residuals befor
 \examples{
 data(polio)
 ## marginal negative binomial model with ARMA(2,1) errors
-m <- gcmr(y~., data=polio, marginal=nb.marg(), cormat=arma.cormat(2,1), 
+m <- gcmr(y~., data=polio, marginal=negbin.marg, cormat=arma.cormat(2,1), 
           options=list(seed=71271, nrep=100))
 ## randomized quantile residuals
 res <- residuals(m)

@@ -7,7 +7,7 @@ Profile likelihood for Gaussian Copula Marginal Regression Models
 Computes the profile likelihood for a fitted Gaussian copula marginal regression model.
 }
 \usage{
-\method{profile}{gcmr}(fitted, which, low = NULL, up = NULL, npoints = 10, 
+\method{profile}{gcmr}(fitted, which, low, up, npoints = 10, 
         display = TRUE, alpha = 0.05, ...)
 }
 \arguments{
@@ -18,10 +18,10 @@ a fitted Gaussian copula marginal regression model of class \code{\link{gcmr}}.
 the index of the parameter which should be profiled. 
 }
   \item{low}{
-the lower limit used in computation of the profile likelihood. If this is \code{NULL}, then the lower limit is set equal to the estimate minus three times its standard error.
+the lower limit used in computation of the profile likelihood. If this is \code{missing}, then the lower limit is set equal to the estimate minus three times its standard error.
 }
   \item{up}{
-the upper limit used in computation of the profile likelihood. If this is \code{NULL}, then the lower limit is set equal to the estimate plus three times its standard error.
+the upper limit used in computation of the profile likelihood. If this is \code{missing}, then the lower limit is set equal to the estimate plus three times its standard error.
 }
   \item{npoints}{
 number of points used in computation of the profile likelihood. Default is \code{10}.
@@ -55,7 +55,7 @@ Guido Masarotto and Cristiano Varin.
 data(scotland)
 D.scotland <- spDists(cbind(scotland$longitude, scotland$latitude), longlat=TRUE)
 m <- gcmr(observed~offset(log(expected))+AFF+I(latitude/100), data=scotland, 
-          marginal=nb.marg(), cormat=matern.cormat(D.scotland), 
+          marginal=negbin.marg, cormat=matern.cormat(D.scotland), 
           options=list(seed=71271, nrep=100))
 prof <- profile(m, which=2, low=0, up=8)
 prof
