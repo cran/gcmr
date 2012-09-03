@@ -1,7 +1,7 @@
 \name{ind.cormat}
 \alias{ind.cormat}
 \title{
-Gaussian Copula Regression with Working independence Correlation Matrix
+Gaussian Copula Marginal Regression with Working independence Correlation Matrix
 }
 \description{
 Sets working independence correlation matrix in Gaussian copula marginal regression models.
@@ -13,7 +13,7 @@ ind.cormat()
 An object of class \code{\link{cormat.gcmr}} representing an identity correlation matrix.
 }
 \references{
-Masarotto, G. and Varin, C. (2011). Gaussian copula marginal regression. Preprint.
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 }
 \author{
 Guido Masarotto and Cristiano Varin.

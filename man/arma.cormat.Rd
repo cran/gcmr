@@ -1,7 +1,7 @@
 \name{arma.cormat}
 \alias{arma.cormat}
 \title{
-Gaussian Copula Regression with ARMA(p,q) Correlation Matrix
+Gaussian Copula Marginal Regression with ARMA(p,q) Correlation Matrix
 }
 \description{
 Sets ARMA(p,q) correlation in Gaussian copula regression models.
@@ -21,7 +21,7 @@ order of the moving average component.
 An object of class \code{\link{cormat.gcmr}} representing a correlation matrix with ARMA(p,q) structure.
 }
 \references{
-Masarotto, G. and Varin, C. (2011). Gaussian copula marginal regression. Preprint.
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 }
 \author{
 Guido Masarotto and Cristiano Varin.

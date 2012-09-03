@@ -1,7 +1,7 @@
 \name{cluster.cormat}
 \alias{cluster.cormat}
 \title{
-Gaussian Copula Regression with Longitudinal/Clustered Data Correlation Matrix
+Gaussian Copula Marginal Regression with Longitudinal/Clustered Data Correlation Matrix
 }
 \description{
 Sets longitudinal/clustered data correlation in Gaussian copula regression models.
@@ -17,7 +17,7 @@ sorted in way that observations from the same cluster are contiguous.
   \item{type}{
 a character string specifying the correlation structure. At the moment, the following are implemented: 
 \tabular{ll}{
-\code{independent} \tab working independence. \cr
+\code{independence} \tab working independence. \cr
 \code{ar1} \tab autoregressive of order 1. \cr
 \code{ma1} \tab moving average of order 1. \cr
 \code{exchangeable} \tab exchangeable. \cr
@@ -32,7 +32,7 @@ An object of class \code{\link{cormat.gcmr}} representing a correlation matrix f
 The correlation matrices are inherited from the \code{\link{nlme}} package (Pinheiro and Bates, 2000).
 }
 \references{
-Masarotto, G. and Varin, C. (2011). Gaussian copula regression models. Preprint.
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 
 Pinheiro, J.C. and Bates, D.M. (2000). \emph{Mixed-Effects Models in S and S-PLUS}. Springer.
 }

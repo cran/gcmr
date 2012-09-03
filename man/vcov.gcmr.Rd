@@ -1,7 +1,7 @@
 \name{vcov.gcmr}
 \alias{vcov.gcmr}
 \title{
-Variance-Covariance Matrix for Parameters in Gaussian Copula Marginal Regression Models
+Variance-Covariance Matrix of Parameters for a Fitted Gaussian Copula Marginal Regression Model
 }
 \description{
 This method extracts or computes the variance-covariance matrix for parameters in a fitted marginal regression model.
@@ -36,7 +36,7 @@ A matrix containing the estimated covariances between the parameter estimates of
 \references{
 Andrews, D.W.K. (1991). Heteroskedasticity and autocorrelation consistent covariance matrix estimation. \emph{Econometrica}, \bold{59}, 817--858.
 
-Masarotto, G. and Varin. C. (2011). Gaussian copula marginal regression. Preprint. 
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 
 Zeleis, A. (2006). Object-oriented computation of sandwich estimators. \emph{Journal of Statistical Software} \bold{16}, issue 9.
 }

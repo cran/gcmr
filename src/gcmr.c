@@ -1,9 +1,77 @@
 #include <R.h>
-#include <R_ext/Utils.h>
 #include <Rmath.h>
+#include <Rinternals.h>
+#include <R_ext/Rdynload.h>
 #include <float.h>
 
-void csampler( int *ipar, double *chol, double *limits, double *llik) {
+/* Forward declarations */
+static void csampler( int *ipar, double *chol, double *limits, double *llik);
+static void bsolver( int *ipar, double *chol, double *limits, double *llik);
+
+/* 
+   R interface.
+
+   Input:   
+   - ipar=c(is response discrete?,should I return the likelihood?,
+            number of observations, number of Monte Carlo replications,
+            number of clusters, length of cluster 1, lenght of cluster 2,...)
+   - chol=Cholesky factor of the correlation matrix.
+          If the number of clusters is greater than 1, it can be
+          the Cholesky factor of the correlation matrix within the first cluster,
+	  followed by the Cholesky factor of the correlation matrix within the second,
+	  and so on.
+   - dp = a nx2 matrix containing the value of the marginal density and cdf
+
+   Output:
+   - if (should I return the likelihood != 0) a vector with an
+     approximation of log p(y_i|y_{i-1},...,y_1).
+   - otherwise a nx2 matrix containing what is needed
+     for the computation of the conditional residuals. 
+     In particular, if the response is discrete, 
+     the matrix contains an approximation of
+     [first column] p(y_i|y_{i-1},...,y_1)
+     [second column] p(Y_i<=y_i|Y_{i-1}=y_{i-1},...,Y_{1}=y_1),
+     i.e., a conditional version of dp.
+     If the response is continuous, the second column contains
+     the conditional residuals.
+*/
+static SEXP gcmrcomp(SEXP ipar, SEXP chol, SEXP dp) {
+    SEXP llik;
+    /* coerce the arguments to the right type */
+    PROTECT(ipar = coerceVector(ipar, INTSXP));
+    PROTECT(chol = coerceVector(chol, REALSXP));
+    /* Since dp is modified in csampler/bsolver we always make a fresh copy */
+    PROTECT(dp = (TYPEOF(dp)==REALSXP) ? duplicate(dp) : coerceVector(dp,REALSXP));
+    /* allocate the space for the log likelihood */
+    PROTECT(llik = allocVector(REALSXP, INTEGER(ipar)[2]));
+    /* Ok, we can do the real thing... */
+    if (INTEGER(ipar)[0]) {
+	csampler(INTEGER(ipar)+2,REAL(chol),REAL(dp),REAL(llik));
+    } else {
+	bsolver(INTEGER(ipar)+2,REAL(chol),REAL(dp),REAL(llik));
+    }
+    /* and return */
+    UNPROTECT(4);
+    return((INTEGER(ipar)[1]) ? llik : dp);
+} 
+
+
+/* Registration */
+static const R_CallMethodDef CallMethods[] = {
+    {"gcmrcomp", (DL_FUNC) &gcmrcomp, 3},
+    {NULL,NULL,0}
+};
+
+void R_init_gcmr(DllInfo *info) {
+    R_registerRoutines(info, NULL, CallMethods, NULL, NULL);
+}
+
+
+/* 
+   Likelihood and conditional residuals computation in the discrete case:
+   Conditional (GHK) sampler 
+*/
+static void csampler( int *ipar, double *chol, double *limits, double *llik) {
     int g, ig, ng, r , i, j , ij , n = ipar[0] , m = ipar[1] , nstrata = ipar[2],
 	*lstrata = ipar + 3;
     double *a = limits, *b = limits+n, ZERO=0, ONE=1, yi, cii , sup,
@@ -17,8 +85,10 @@ void csampler( int *ipar, double *chol, double *limits, double *llik) {
 	for ( r=0 ; r<m ; r++) w[r] = ONE;
 	for ( ig=0 ; ig<ng ; ig++, i++) {
 	    a[i] = qnorm(fmax2(EPS,fmin2(EPS1,b[i]-a[i])), ZERO, ONE, 1, 0);
-	    b[i] = qnorm(fmax2(EPS,fmin2(EPS1,b[i])), ZERO, ONE, 1, 0);	    
-	    for ( r=0, xr=x, mw=s2=sup=0 ; r < m ; r++, xr += n ) {
+	    b[i] = qnorm(fmax2(EPS,fmin2(EPS1,b[i])), ZERO, ONE, 1, 0);
+	    mw = s2 = sup = 0.0 ;
+	    for ( r=0 ; r < m ; r++ ) {
+		xr = x + r*n ;
 		for ( j=0 , yi=0 , ij = ig*ng ; j < ig ; j++ , ij++) yi += chol[ij]*xr[j] ;
 		cii = chol[ig+ig*ng] ;
 		plow = pnorm(a[i] , yi , cii, 1 , 0 ) ;
@@ -49,8 +119,10 @@ void csampler( int *ipar, double *chol, double *limits, double *llik) {
 
 
 
-
-void bsolver( int *ipar, double *chol, double *limits, double *llik) {
+/* 
+   Likelihood and residuals computation in the continuos case 
+*/
+static void bsolver( int *ipar, double *chol, double *limits, double *llik) {
     int g, ig, ng, i, j , ij , n = ipar[0] , m = ipar[1] , nstrata = ipar[2],
 	*lstrata = ipar + 3;
     double *a = limits, *b = limits+n, ZERO=0, ONE=1, TWO=2, yi, cii , lk , z, 
@@ -67,7 +139,5 @@ void bsolver( int *ipar, double *chol, double *limits, double *llik) {
 	es += ng ;
 	chol += ng*ng ;
     }
-    PutRNGstate();
 }
-
 

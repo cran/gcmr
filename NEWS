@@ -1,0 +1,18 @@
+Version 0.5.0
+-------------
+- box constraints for the parameters can be easily specified in marginal and cormat
+- switched to the .Call interface; C functions are now registered.
+- renamed marginal$sim to marginal$q (this method is yet unused in the exported interface)
+
+Version 0.4
+------------
+- long marginal name (gaussian not gs, poisson not ps)
+- added Gamma and Weibull marginals 
+- added type="independence" to cluster.cormat  
+- 'marginal' and 'cormat' arguments can be resolved in 'data'
+- optimization warning are given only for the final call of the
+numerical optimization routine
+
+Version 0.3
+------------ 
+First public release

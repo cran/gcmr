@@ -1,8 +1,8 @@
-useDynLib(gcmr, csampler, bsolver)
+useDynLib(gcmr, .registration=TRUE)
 importFrom(sandwich, estfun, bread)
 export(gaussian.marg, poisson.marg, binomial.marg,
-	 negbin.marg, Gamma.marg, weibull.marg,
-	 gs.marg, ps.marg, bn.marg, nb.marg, 
+       negbin.marg, Gamma.marg, weibull.marg,
+       gs.marg, ps.marg, bn.marg, nb.marg, 
        ind.cormat, arma.cormat, cluster.cormat, matern.cormat,
        gcmr, gcmr.fit, gcmr.options, se)
 S3method("bread", "gcmr")

@@ -1,7 +1,7 @@
 \name{profile.gcmr}
 \alias{profile.gcmr}
 \title{
-Profile likelihood for Gaussian Copula Marginal Regression Models
+Profile Likelihood for Gaussian Copula Marginal Regression Models
 }
 \description{
 Computes the profile likelihood for a fitted Gaussian copula marginal regression model.
@@ -43,6 +43,9 @@ If display requested, then the profile likelihood is smoothed by cubic spline in
 A list with the following components:
 \item{points}{points at which the profile likelihood is evaluated.}
 \item{profile}{values of the profile likelihood.}
+}
+\references{
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 }
 \author{
 Guido Masarotto and Cristiano Varin.

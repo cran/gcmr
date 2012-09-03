@@ -14,7 +14,7 @@ At the moment, the following are implemented:
 }
 }
 \references{
- Masarotto, G. and Varin, C. (2011). Gaussian copula marginal regression. Preprint.
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 }
 \author{
 Guido Masarotto and Cristiano Varin.

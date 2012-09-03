@@ -1,7 +1,7 @@
 \name{se}
 \alias{se}
 \title{
-Standard Errors of Parameters Estimators in Gaussian Copula Marginal Regression Models
+Standard Errors of Parameters for a Fitted Gaussian Copula Marginal Regression Model
 }
 \description{
 Returns the standard errors vector of a fitted Gaussian copula marginal regression model.
@@ -21,7 +21,7 @@ further arguments passed to function \code{\link{vcov.gcmr}}.
 A vector containing the estimated standard errors of the parameter of a fitted \code{\link{gcmr}} model.
 }
 \references{
-Masarotto, G. and Varin. C. (2011). Gaussian copula marginal regression. Preprint. 
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 }
 \author{
 Guido Masarotto and Cristiano Varin.

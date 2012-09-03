@@ -4,7 +4,7 @@ llik <- function(m, irep, magic=NA) {
     not.na <- m$not.na
     y <- m$y[not.na,]
     x <- m$x[not.na,,drop=FALSE]
-    offset <- m$offset[not.na,,drop=FALSE]
+    offset <- m$offset[not.na,]
     is.int <- m$marginal$type == "integer"
     ind.lik <- !is.null(m$cormat$independent) 
     dp <- m$marginal$dp
@@ -15,8 +15,7 @@ llik <- function(m, irep, magic=NA) {
     seed <- m$options$seed
     id <- if(is.null(m$cormat$id)) rep(1,n) else m$cormat$id
     lstrata <- rle(id)$length
-    ipar <- c(n,irep,length(lstrata),lstrata)
-    Cfun <- if (is.int) "csampler" else "bsolver"
+    ipar <- c(if(is.int) 1 else 0,1,n,irep,length(lstrata),lstrata)
     magic <- rep(magic,m$n)
     theta <- m$fixed
     ifree <- is.na(theta)
@@ -31,7 +30,7 @@ llik <- function(m, irep, magic=NA) {
         } else {
             dp <- get("dp",envir=cache)
         }
-        if ( !all(is.finite(dp)) ) return( magic )
+        if ( is.null(dp) ) return( magic )
         if ( ind.lik ) return( log(dp[,1]) )
         gamma <- theta[igamma]
         if (!identical(cache$gamma,gamma)) {
@@ -43,8 +42,7 @@ llik <- function(m, irep, magic=NA) {
         }
         if ( is.null(q) ) return ( magic )
         if (is.int) set.seed(seed)
-        lk <- .C(Cfun, as.integer(ipar), as.double(unlist(q)), as.double(dp),
-                 lk=double(n), NAOK=TRUE,dup=FALSE,package="gcmr")$lk
+        lk <- .Call(gcmrcomp, ipar, unlist(q), dp)
         if ( all(is.finite(lk)) ) lk else magic
     }    
 } 
@@ -61,14 +59,16 @@ truefit <- function(x) {
     ifree <- is.na( x$fixed )
     theta <- x$fixed
     theta[ifree] <- x$estimate[ifree]
+    low <- x$lower[ifree]
+    up <- x$upper[ifree]
     big <- -sqrt(.Machine$double.xmax)
     nrep <- if(x$marginal$type=="numeric") 1 else x$options$nrep
     for ( i in 1:length(nrep) ) {
         log.lik <- llik(x,nrep[i],big)
         if( i!=length(nrep) ) # no warnings until last optimization
-          ans <- suppressWarnings( x$options$opt( theta[ifree] , log.lik ) )
+          ans <- suppressWarnings( x$options$opt(theta[ifree] , log.lik , low, up) )
         else
-          ans <- x$options$opt( theta[ifree] , log.lik )
+          ans <- x$options$opt( theta[ifree] , log.lik , low, up)
         theta[ifree] <- ans$estimate
     }
     names(theta) <- names(x$estimate)
@@ -91,7 +91,10 @@ jhess <- function(x, options=x$options, only.jac = FALSE) {
     theta <- x$estimate
     ifree <- is.na( x$fixed )
     theta.free <- theta[ifree]
-    log.lik <- llik(x)
+    low <- x$lower[ifree]
+    up <- x$upper[ifree]
+    xlik <- llik(x)
+    log.lik <- function(th) xlik(pmax(low,pmin(up,th)))
     eps <- .Machine$double.eps^(1/4)
     relStep <- 0.1
     maxtry <- 10
@@ -128,35 +131,38 @@ gradcheck <- function(x, options=x$options) {
     sum(g*solve(crossprod(j),g))
 }
 
-gcmr.opt <- function(start,loglik) {
-    ans <- nlminb(start,function(x) -sum(loglik(x)))
+gcmr.opt <- function(start,loglik, lower, upper) {
+    ans <- nlminb(start,function(x) -sum(loglik(x)), lower=lower, upper=upper)
     if(ans$convergence) warning(paste("nlminb exits with code",ans$convergence))
     list(estimate=ans$par,maximum=ans$objective)
 }
 
-gcmr.options <- function(seed=round(runif(1,1,100000)), nrep=c(100,1000), no.se=FALSE, opt=gcmr.opt) {
+gcmr.options <- function(seed=round(runif(1,1,100000)), nrep=c(100,1000),
+                         no.se=FALSE, opt=gcmr.opt) {
     list(seed=seed,nrep=nrep,no.se=no.se,opt=opt)
 }
 
-gcmr <- function(formula, data, subset, offset, contrasts=NULL, marginal, cormat, start, fixed, options=gcmr.options()){
-
-    ## next lines partially "inherited" from function glm
+gcmr <- function(formula, data, subset, offset, contrasts=NULL, marginal, cormat,
+                 start, fixed, options=gcmr.options()){
     call <- match.call()
+    if( !missing(data) ) {
+        marginal <- eval(call$marginal,data,parent.frame())
+        cormat <- eval(call$cormat,data,parent.frame())
+    }
     if( is.function( marginal ) )
      marginal <- marginal()
-    if(!missing(data))
-      cormat <- eval(call$cormat,data,parent.frame())
+    if ( !inherits( marginal , "marginal.gcmr" ) ) stop("Unknown marginal")
     if( is.function( cormat ) )
       cormat <- cormat()
-    if ( !inherits( marginal , "marginal.gcmr" ) ) stop("Unknown marginal")
-    
     if ( !inherits( cormat , "cormat.gcmr" ) ) stop("Unknown cormat")
     if (missing(data)) 
         data <- environment(formula)
+    ## next lines partially "inherited" from function glm
     mf <- match.call(expand.dots = FALSE)
     m <- match(c("formula", "data", "subset", "offset"), names(mf), 0L)
     mf <- mf[c(1L, m)]
     mf$drop.unused.levels <- TRUE
+    mf$na.action <- na.pass
     mf[[1L]] <- as.name("model.frame")
     mf <- eval(mf, parent.frame())
     mt <- attr(mf, "terms")
@@ -184,7 +190,6 @@ gcmr <- function(formula, data, subset, offset, contrasts=NULL, marginal, cormat
 }
 
 gcmr.fit <- function(x=rep(1,NROW(y)), y, offset=rep(0,NROW(y)), marginal, cormat, start, fixed, options=gcmr.options()) {
-
    if( is.function( marginal ) )
      marginal <- marginal()
    if( is.function( cormat ) )
@@ -193,8 +198,6 @@ gcmr.fit <- function(x=rep(1,NROW(y)), y, offset=rep(0,NROW(y)), marginal, corma
     if ( !inherits( marginal , "marginal.gcmr" ) ) stop("Unknown marginal")
     if ( !inherits( cormat , "cormat.gcmr" ) ) stop("Unknown cormat")
     ## gcmr object
-    if(exists("init", where=marginal))
-      marginal$init(y, x)  
     nb <- marginal$npar(x)
     ng <- cormat$npar
     not.na <- apply(cbind(y,x,offset),1,function(z) !any(is.na(z)))
@@ -202,9 +205,29 @@ gcmr.fit <- function(x=rep(1,NROW(y)), y, offset=rep(0,NROW(y)), marginal, corma
                         not.na=not.na, n=sum(not.na), marginal=marginal, cormat=cormat,
                         ibeta=1:nb, igamma=if (ng) (nb+1):(nb+ng) else NULL,
                         call=match.call()), class="gcmr")
-    m$estimate <- if ( missing(start) ) c(marginal$start(m$y,m$x,m$offset),cormat$start()) else start
+    if ( missing(start) ) {
+        lambda <- marginal$start(m$y[not.na,],m$x[not.na,,drop=FALSE],m$offset[not.na,])
+        tau <- cormat$start()
+        m$estimate <- c(lambda,tau)
+        ll <- attr(lambda,"lower")
+        lt <- attr(tau,"lower")
+        m$lower <- c(if(is.null(ll)) rep(-Inf,length(lambda)) else ll,
+                     if(is.null(lt)) rep(-Inf,length(tau)) else lt)
+        ll <- attr(lambda,"upper")
+        lt <- attr(tau,"upper")
+        m$upper <- c(if(is.null(ll)) rep(Inf,length(lambda)) else ll,
+                     if(is.null(lt)) rep(Inf,length(tau)) else lt)
+    } else {
+        m$estimate <- start
+        ll <- attr(start,"lower")
+        m$lower <- if(is.null(ll)) rep(-Inf,length(start)) else ll
+        ll <- attr(start,"upper")
+        m$upper <- if(is.null(ll)) rep(Inf,length(start)) else ll
+    }
     if (length(m$estimate) != nb+ng) stop("mismatch in the number of initial parameters")
-    if ( missing(fixed) ) {
+    if (length(m$lower) != nb+ng) stop("length of lower different from the number of the parameters")
+    if (length(m$upper) != nb+ng) stop("length of upper different from the number of the parameters")
+   if ( missing(fixed) ) {
         m$fixed <- rep( NA , length(m$estimate) )
     } else {
         if (length(fixed) != length(m$estimate) ) stop("fixed has a wrong length")
@@ -306,30 +329,29 @@ residuals.gcmr <- function (object, type=c("conditional","marginal"),
     }
     a <- object$marginal$dp(object$y[object$not.na,],
                             object$x[object$not.na,,drop=FALSE],
-                            object$offset[object$not.na,,drop=FALSE],
+                            object$offset[object$not.na,],
                             object$estimate[object$ibeta])
     if (cond) {
         q <- object$cormat$chol(object$estimate[object$igamma],object$not.na)
         id <- if(is.null(object$cormat$id)) rep(1,object$n) else object$cormat$id
         lstrata <- rle(id)$length
-        ipar <- c(object$n,max(object$options$nrep),length(lstrata),lstrata)
-        a <- matrix(.C(if (is.int) "csampler" else "bsolver",
-                       as.integer(ipar), as.double(unlist(q)), a=as.double(a),
-                       double(object$n), NAOK=TRUE,dup=FALSE,package="gcmr")$a, object$n)
+        ipar <- c(if(is.int) 1 else 0, 0,
+                  object$n,max(object$options$nrep),length(lstrata),lstrata)
+        a <- .Call(gcmrcomp,ipar,unlist(q),a)
     }
     if (is.int) {
         if (method=="random") {
-            ans <- rep(NA,sum(object$not.na))
+            ans <- rep(NA,length(object$not.na))
             ans[object$not.na] <- qnorm(a[,2]-u*a[,1])            
         } else if (method=="interval") {
-            ans <- matrix(NA,sum(object$not.na),2)
+            ans <- matrix(NA,length(object$not.na),2)
             ans[object$not.na,] <- qnorm(cbind(a[,2],a[,2]-a[,1]))
         } else {
-            ans <- rep(NA,sum(object$not.na))
+            ans <- rep(NA,length(object$not.na))
             ans[object$not.na] <- qnorm(a[,2]-a[,1]/2)            
         }
     } else {
-            ans <- rep(NA,sum(object$not.na))
+            ans <- rep(NA,length(object$not.na))
             ans[object$not.na] <- if (cond) a[,2] else qnorm(a[,2])            
     }
     ans
@@ -390,10 +412,10 @@ hausman <- function(m, method=c("one-step","full"),
     R <- lapply(R,t)
     y <- m$y[m$not.na,]
     x <- m$x[m$not.na,,drop=FALSE]
-    offset <- m$offset[m$not.na,,drop=FALSE]
+    offset <- m$offset[m$not.na,]
     sim <- function() {
         u <- pnorm(unlist(lapply(R, function(x) x %*% rnorm(NROW(x)))))
-        m$marginal$sim(u,y,x,offset,betaml)
+        m$marginal$q(u,x,offset,betaml)
     }
     ## bootstrap estimate of the the variance of the difference
     vdelta <- var(if (method=="one-step") dh1(m,mind,sim,nboot) else dhf(m,mind,sim,nboot))
