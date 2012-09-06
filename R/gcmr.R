@@ -366,12 +366,13 @@ plotint <- function(r) {
 
 profile.gcmr <- function(fitted , which , low , up, npoints = 10 , display = TRUE , alpha = 0.05, ... ) {
     if ( !inherits( fitted , "gcmr" ) ) stop("first argument must be a mr object")
-    if(is.null(low) || is.null(up)){
+    if(missing(low)){
       this.se <- se(fitted)[which]
-      if(missing(low))
-        low <- coef(fitted)[which]-3*this.se
-      if(missing(up))
-        up <- coef(fitted)[which]+3*this.se
+      low <- coef(fitted)[which]-3*this.se
+    }
+    if(missing(up)){
+      this.se <- se(fitted)[which]
+      up <- coef(fitted)[which]+3*this.se
     }
     points <- seq( low , up , length = npoints )
     prof <- function(x,which,fitted) {

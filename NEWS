@@ -1,3 +1,7 @@
+Version 0.5.1
+-------------
+- bug in profile.gcmr fixed
+
 Version 0.5.0
 -------------
 - box constraints for the parameters can be easily specified in marginal and cormat
@@ -13,6 +17,3 @@ Version 0.4
 - optimization warning are given only for the final call of the
 numerical optimization routine
 
-Version 0.3
------------- 
-First public release

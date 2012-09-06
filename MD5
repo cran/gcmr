@@ -1,8 +1,8 @@
-fce979faac49e47a3e6f14ea22b0757f *DESCRIPTION
+aff4b5c617a15fca4f5d890f6492da45 *DESCRIPTION
 3c16ed1c8fafe46b258df801b12793ca *NAMESPACE
-545ab5a3ec52479c175f6cf6a66c7ecc *NEWS
+5bcd98175e1aa1fd26fc98166348aa0c *NEWS
 429b8d785f5b2a2a23b001cafadeed04 *R/cormat.R
-9ffc84b415095ea1bd017cf1eef6d13d *R/gcmr.R
+da77a8f8f5035767895cabc441768e41 *R/gcmr.R
 5e8120ac81d1b8aaab932cad258bc71f *R/marginals.R
 5b708ed66f82f87f51026858c61580df *data/polio.RData
 1da7ba8777566e5d10da81d0cff5f0b5 *data/scotland.RData
