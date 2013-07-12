@@ -7,7 +7,7 @@ Gaussian Copula Regression with Matern Spatial Correlation Matrix
 Sets a Matern spatial correlation matrix in Gaussian copula marginal regression models.
 }
 \usage{
-matern.cormat(D, alpha=0.5)
+matern.cormat(D, alpha = 0.5)
 }
 \arguments{
   \item{D}{

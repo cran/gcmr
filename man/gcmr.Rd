@@ -8,19 +8,17 @@ Fitting Gaussian Copula Marginal Regression Models by Maximum (Simulated) Likeli
 Fits Gaussian copula marginal regression models by maximum (simulated) likelihood.   
 }
 \usage{
-
 gcmr(formula, data, subset, offset, contrasts=NULL, 
      marginal, cormat, start, fixed, options=gcmr.options())
 
-gcmr.fit(x=rep(1,NROW(y)), y, offset=rep(0,NROW(y)), 
-	 marginal, cormat, start, fixed, options=gcmr.options())
-
+gcmr.fit(x=rep(1,NROW(y)), y, z=NULL, offset=NULL, 
+	 marginal, cormat, start, fixed, options=gcmr.options())		   
 }
 
 \arguments{
 \item{formula}{
-an object of class \code{"\link{formula}"} (or one that
-can be coerced to that class): a symbolic description of the model to be fitted.
+a symbolic description of the model to be fitted of type \code{y ~ x} or 
+\code{y ~ x | z}, for details see below.
 }
 
 \item{data}{
@@ -32,17 +30,20 @@ an optional vector specifying a subset of observations to be used in the fitting
 }
 
 \item{offset}{
-this can be used to specify an \emph{a priori} known component to be included in the linear predictor during fitting. This should be \code{NULL} or a numeric vector of length equal to the number of cases. One or more \code{\link{offset}} terms can be included in the formula instead or as well, and if more than one is specified their sum is used.  See \code{\link{model.offset}}.
+optional numeric vector with an a priori known component to be included in the linear predictor for the mean. When appropriate, offset may also be a list of two offsets for the mean and precision equation, respectively.
 }
 
 \item{contrasts}{
 an optional list. See the \code{contrasts.arg} of \code{model.matrix.default}.
 }
 
-\item{x}{a design matrix of dimension \code{n * p}.
+\item{x}{design matrix of dimension \code{n * p}.
 }
 
 \item{y}{vector of observations of length \code{n}.
+}
+
+\item{z}{optional design matrix for the dispersion/shape of dimension \code{n * p}.
 }
 
 \item{marginal}{
@@ -71,6 +72,8 @@ Gaussian copula marginal regression models (Song, 2000; Masarotto and Varin, 201
 
 This package contains \R functions related to the paper Masarotto and Varin (2012). The main function is \code{\link{gcmr}} that fits Gaussian copula marginal regression models. Inference is performed through a likelihood approach. Computation of the exact likelihood is possible only for continuous responses, otherwise the likelihood function is approximated by importance sampling. See Masarotto and Varin (2012) for details.
 
+Standard formula \code{y ~ x1 + x2} indicates that the mean response is modelled as a function of covariates \code{x1} and \code{x2} through an appropriate link function. Extended formula  \code{y ~ x1 + x2 | z1 + z2} indicates that the dispersion (or the shape) parameter of the marginal distribution is modelled as a function of covariates \code{z1} and \code{z2}. Dispersion (or shape) parameters are always modelled on logarithm scale. Covariates for mean and dispersion can be overlapping.
+
 For binomial marginals specified by \code{binomial.marg} the response is specified as a factor when the first level denotes failure and all others success or as a two-column matrix with the columns giving the numbers of successes and failures. 
 
 \code{gcmr.fit} is the workhorse function: it is not normally called directly but can be more efficient where the response vector and design matrix have already been calculated.
@@ -82,7 +85,8 @@ An object of class \code{"gcmr"} with the following components:
 \item{hessian}{(minus) the Hessian at the maximum likelihood estimate.}
 \item{jac}{the Jacobian at the maximum likelihood estimate.}
 \item{y}{the y vector used.}
-\item{x}{the model matrix used.}
+\item{x}{the model matrix used for the mean response.}
+\item{z}{the (optional) model matrix used for the dispersion/shape.}
 \item{offset}{the offset used.}
 \item{n}{the number of observations.}
 \item{call}{the matched call.}
@@ -110,17 +114,34 @@ Guido Masarotto and Cristiano Varin.
 \examples{
 ## Warning: Likelihood approximated using only a limited number 
 ## of Monte Carlo replications.
-## Polio data. Marginal negative binomial model with ARMA(2,1) correlation matrix.
-data(polio)
-gcmr(y~., data=polio, marginal=negbin.marg, cormat=arma.cormat(2,1), 
-     options=list(seed=71271, nrep=100))
+## Polio data. 
+## Marginal negative binomial model with ARMA(2,1) correlation matrix.
+data( polio )
+names( polio )
+gcmr( y ~ . , data = polio, marginal = negbin.marg, cormat = arma.cormat( 2, 1 ), 
+options = list( seed = 71271, nrep = 100 ) )
 ## Scotland lip cancer data. 
 ## Marginal negative binomial model with Matern correlation matrix.
 data(scotland)
-D.scotland <- spDists(cbind(scotland$longitude, scotland$latitude), longlat=TRUE)
-gcmr(observed~offset(log(expected))+AFF+I(latitude/100), data=scotland, 
-     marginal=negbin.marg, cormat=matern.cormat(D.scotland), 
-     options=list(seed=71271, nrep=100))
+D.scotland <- spDists( cbind( scotland$longitude, scotland$latitude ), longlat = TRUE )
+gcmr( observed ~ offset( log( expected ) ) + AFF + I( latitude / 100 ), data = scotland, 
+marginal = negbin.marg, cormat = matern.cormat( D.scotland ), options = 
+list( seed = 71271, nrep = 100 ) )
+## Monthly Deaths from Lung Diseases in the UK.
+## Marginal Gamma model with ARMA(1,0) correlation matrix 
+sinTerm <- sin( 2*pi*time( ldeaths ) )
+cosTerm <- cos( 2*pi*time( ldeaths ) )
+trend <- scale( time( ldeaths ) )
+gcmr( ldeaths ~ trend + sinTerm + cosTerm,  marginal = Gamma.marg( link = "log" ), 
+cormat = arma.cormat( p = 1 ) )
+## now with dispersion modelling
+gcmr( ldeaths ~ trend + sinTerm + cosTerm | trend + sinTerm + cosTerm, marginal = 
+Gamma.marg( link = "log" ), cormat = arma.cormat( p = 1 ) )
+## Prater's Petrol Refinery Data
+## Beta regression with exchangeable within clustered correlation
+gcmr( I( Y/100 ) ~ SG + VP + V10 + EP, marginal = beta.marg, cormat = cluster.cormat( 
+id = as.numeric(No), type = "exchangeable" ), data = petrol )		
+## (results suggest no evidence of within-cluster correlation)
 }
 \keyword{regression}
 \keyword{nonlinear}

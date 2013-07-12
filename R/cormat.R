@@ -1,4 +1,4 @@
-## cormat must have class cormat.mr and the following elements:
+## cormat must have class cormat.gcmr and the following elements:
 ## - npar: number of parameters.
 ## - start(): initial estimates; optional attributes lower and upper can be used
 ##   to specify box constrained parameters

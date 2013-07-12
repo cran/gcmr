@@ -32,12 +32,12 @@ Guido Masarotto and Cristiano Varin.
 \examples{
 data(polio)
 ## ARMA(2,1)      
-m <- gcmr(y~., data=polio, marginal=negbin.marg, cormat=arma.cormat(2,1), 
-          options=list(seed=71271, nrep=100))
+m <- gcmr( y ~ . , data = polio, marginal = negbin.marg, cormat = arma.cormat(2, 1), 
+          options = list( seed = 71271, nrep = 100 ) )
 m
 ## various type of standard errors
-res <- cbind(se(m,"he"),se(m,"v"),se(m,"s"),se(m,"hac"))
-colnames(res) <- c("hessian", "vscore", "sandwich", "HAC")
+res <- cbind( se( m, "he" ), se( m, "v" ), se( m, "s" ), se( m, "hac" ) )
+colnames( res ) <- c( "hessian", "vscore", "sandwich", "HAC" )
 res
 }
 \keyword{regression}

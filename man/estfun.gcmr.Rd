@@ -5,7 +5,7 @@
 Bread and Salami for Sandwich Estimation in Gaussian Marginal Regression Models
 }
 \description{
-Extracts empirical estimating functions (aka salami) and the inverse of (minus) the Hessian (aka bread) of a fitted Gaussian marginal regression model for computation of the sandwich variance-covariance matrix (Zeleis, 2006). 
+Extracts empirical estimating functions (salami) and the inverse of (minus) the Hessian (bread) of a fitted Gaussian marginal regression model for computation of the sandwich variance-covariance matrix (Zeileis, 2006). 
 }
 \usage{
 \method{estfun}{gcmr}(x, ...)
@@ -21,7 +21,7 @@ further arguments passed to methods.
 }
 }
 \details{
-These functions are passed to \code{\link{sandwich}} (Zeleis, 2006).
+These functions are passed to \code{\link{sandwich}} (Zeileis, 2006).
 }
 \value{
 \code{estfun}: a matrix containing the empirical estimating functions. 
@@ -29,7 +29,7 @@ These functions are passed to \code{\link{sandwich}} (Zeleis, 2006).
 \code{bread}: a matrix containing the inverse of (minus) the Hessian. 
 }
 \references{
-Zeleis, A. (2006). Object-oriented computation of sandwich estimators. \emph{Journal of Statistical Software} \bold{16}, issue 9.
+Zeileis, A. (2006). Object-oriented computation of sandwich estimators. \emph{Journal of Statistical Software} \bold{16}, issue 9.
 }
 \author{
 Guido Masarotto and Cristiano Varin.

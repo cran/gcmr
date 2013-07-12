@@ -8,7 +8,7 @@ Gaussian Copula Marginal Regression
  Fits Gaussian copula marginal regression models described by Song (2000) and Masarotto and Varin (2012). 
 }
 \details{
-Gaussian copula marginal regression models (Song, 2000; Masarotto and Varin, 2012) provide a flexible general framework for modelling dependent responses of any type. Gaussian copulas combine the simplicity of interpretation in marginal modelling with the flexibility in the specification of the dependence structure in multivariate normal models. 
+Gaussian copula marginal regression models (Song, 2000; Masarotto and Varin, 2012) provide a flexible general framework for modelling dependent responses of any type. Gaussian copulas combine the simplicity of interpretation of marginal modelling with the flexibility in the specification of the dependence structure in multivariate normal models. 
 
 This package contains \R functions related to the paper Masarotto and Varin (2012). The main function is \code{\link{gcmr}} that fits Gaussian copula marginal regression models. Inference is performed through a likelihood approach. Computation of the exact likelihood is possible only for continuous responses, otherwise the likelihood function is approximated by importance sampling. See Masarotto and Varin (2012) for details.
 }

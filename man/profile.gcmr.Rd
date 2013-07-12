@@ -4,7 +4,7 @@
 Profile Likelihood for Gaussian Copula Marginal Regression Models
 }
 \description{
-Computes the profile likelihood for a fitted Gaussian copula marginal regression model.
+Computes the profile likelihood for mean response parameters of a Gaussian copula marginal regression model.
 }
 \usage{
 \method{profile}{gcmr}(fitted, which, low, up, npoints = 10, 
@@ -15,7 +15,7 @@ Computes the profile likelihood for a fitted Gaussian copula marginal regression
 a fitted Gaussian copula marginal regression model of class \code{\link{gcmr}}.
 }
   \item{which}{
-the index of the parameter which should be profiled. 
+the index of the mean response parameter which should be profiled. 
 }
   \item{low}{
 the lower limit used in computation of the profile likelihood. If this is \code{missing}, then the lower limit is set equal to the estimate minus three times its standard error.
@@ -56,11 +56,11 @@ Guido Masarotto and Cristiano Varin.
 \examples{
 ## marginal negative binomial model with Matern correlation
 data(scotland)
-D.scotland <- spDists(cbind(scotland$longitude, scotland$latitude), longlat=TRUE)
-m <- gcmr(observed~offset(log(expected))+AFF+I(latitude/100), data=scotland, 
-          marginal=negbin.marg, cormat=matern.cormat(D.scotland), 
-          options=list(seed=71271, nrep=100))
-prof <- profile(m, which=2, low=0, up=8)
+D.scotland <- spDists( cbind( scotland$longitude, scotland$latitude ), longlat = TRUE )
+m <- gcmr( observed ~ offset( log(expected) ) + AFF + I( latitude/100 ), data = scotland, 
+           marginal = negbin.marg, cormat = matern.cormat( D.scotland ), 
+           options = list( seed = 71271, nrep = 100 ) )
+prof <- profile( m, which = 2, low = 0, up = 8 )
 prof
 }
 \keyword{regression}

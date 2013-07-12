@@ -7,7 +7,8 @@ Gaussian Copula Marginal Regression with Longitudinal/Clustered Data Correlation
 Sets longitudinal/clustered data correlation in Gaussian copula regression models.
 }
 \usage{
-cluster.cormat(id, type = c("independence", "ar1", "ma1", "exchangeable", "unstructured"))
+cluster.cormat(id, type = c("independence", "ar1", "ma1", 
+		   	    "exchangeable", "unstructured"))
 }
 \arguments{
   \item{id}{

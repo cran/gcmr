@@ -11,6 +11,7 @@ Male lip cancer in Scotland counties between 1975-1980.
 \format{
 A data frame with the 56 observations with the following variables
 \tabular{ll}{
+
 \code{observed} \tab observed cases in each county. \cr
 \code{expected} \tab excpected cases in each county. \cr
 \code{AFF} \tab proportion of the population employed in agriculture, fishing, or forestry. \cr

@@ -49,10 +49,10 @@ Guido Masarotto and Cristiano Varin.
 \examples{
 data(polio)
 ## working independence       
-m <- gcmr(y~., data=polio, marginal=nb.marg(), cormat=ind.cormat())
+m <- gcmr( y ~ ., data = polio, marginal = nb.marg(), cormat = ind.cormat() )
 m
 ## HAC variance-covariance matrix
-round(vcov(m, "hac"), 2)
+round( vcov( m, "hac" ), 2 )
 }
 \keyword{regression}
 \keyword{nonliner}

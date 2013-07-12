@@ -8,8 +8,8 @@
 At the moment, the following are implemented:
 \tabular{ll}{ 
 \code{\link{ind.cormat}} \tab working independence. \cr
-\code{\link{arma.cormat}} \tab ARMA(p,q).  \cr 
-\code{\link{cluster.cormat}} \tab longitudinal/clustered data.  \cr
+\code{\link{arma.cormat}} \tab ARMA(p,q). \cr 
+\code{\link{cluster.cormat}} \tab longitudinal/clustered data. \cr
 \code{\link{matern.cormat}} \tab  Matern spatial correlation. \cr
 }
 }

@@ -1,6 +1,6 @@
 useDynLib(gcmr, .registration=TRUE)
 importFrom(sandwich, estfun, bread)
-export(gaussian.marg, poisson.marg, binomial.marg,
+export(gaussian.marg, poisson.marg, binomial.marg, beta.marg,
        negbin.marg, Gamma.marg, weibull.marg,
        gs.marg, ps.marg, bn.marg, nb.marg, 
        ind.cormat, arma.cormat, cluster.cormat, matern.cormat,

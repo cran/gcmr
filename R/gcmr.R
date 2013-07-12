@@ -4,7 +4,9 @@ llik <- function(m, irep, magic=NA) {
     not.na <- m$not.na
     y <- m$y[not.na,]
     x <- m$x[not.na,,drop=FALSE]
-    offset <- m$offset[not.na,]
+    z <- m$z[not.na,,drop=FALSE]
+    offset <- list(mean = m$offset$mean[not.na,,drop=FALSE],
+                   precision = m$offset$precision[not.na,,drop=FALSE])
     is.int <- m$marginal$type == "integer"
     ind.lik <- !is.null(m$cormat$independent) 
     dp <- m$marginal$dp
@@ -24,7 +26,7 @@ llik <- function(m, irep, magic=NA) {
         theta[ifree] <- theta.free
         beta <- theta[ibeta]
         if (!identical(cache$beta,beta)) {
-            dp <- dp(y,x,offset,beta)
+            dp <- dp(y,x,z,offset,beta)
             assign("beta",beta,envir=cache)
             assign("dp",dp,envir=cache)
         } else {
@@ -144,69 +146,100 @@ gcmr.options <- function(seed=round(runif(1,1,100000)), nrep=c(100,1000),
 
 gcmr <- function(formula, data, subset, offset, contrasts=NULL, marginal, cormat,
                  start, fixed, options=gcmr.options()){
-    call <- match.call()
-    if( !missing(data) ) {
-        marginal <- eval(call$marginal,data,parent.frame())
-        cormat <- eval(call$cormat,data,parent.frame())
+  call <- match.call()
+  if( !missing(data) ) {
+    marginal <- eval(call$marginal,data,parent.frame())
+    cormat <- eval(call$cormat,data,parent.frame())
+  }
+  if( is.function( marginal ) )
+    marginal <- marginal()
+  if ( !inherits( marginal , "marginal.gcmr" ) ) stop("Unknown marginal")
+  if( is.function( cormat ) )
+    cormat <- cormat()
+  if ( !inherits( cormat , "cormat.gcmr" ) ) stop("Unknown cormat")
+  if (missing(data)) 
+    data <- environment(formula)
+  ## next lines partially "inherited" from function glm
+  mf <- match.call(expand.dots = FALSE)
+  m <- match(c("formula", "data", "subset", "offset"), names(mf), 0L)
+  mf <- mf[c(1L, m)]
+  mf$drop.unused.levels <- TRUE
+  mf$na.action <- na.pass
+  ## next lines partially "inherited" from betareg
+  oformula <- as.formula(formula)
+  formula <- as.Formula(formula)
+  if (length(formula)[2L] < 2L)
+    simple.formula <- TRUE
+  else{
+    simple.formula <- FALSE
+    if (length(formula)[2L] > 2L) {
+      formula <- Formula(formula(formula, rhs = 1:2))
+      warning("formula must not have more than two RHS parts")
     }
-    if( is.function( marginal ) )
-     marginal <- marginal()
-    if ( !inherits( marginal , "marginal.gcmr" ) ) stop("Unknown marginal")
-    if( is.function( cormat ) )
-      cormat <- cormat()
-    if ( !inherits( cormat , "cormat.gcmr" ) ) stop("Unknown cormat")
-    if (missing(data)) 
-        data <- environment(formula)
-    ## next lines partially "inherited" from function glm
-    mf <- match.call(expand.dots = FALSE)
-    m <- match(c("formula", "data", "subset", "offset"), names(mf), 0L)
-    mf <- mf[c(1L, m)]
-    mf$drop.unused.levels <- TRUE
-    mf$na.action <- na.pass
-    mf[[1L]] <- as.name("model.frame")
-    mf <- eval(mf, parent.frame())
-    mt <- attr(mf, "terms")
-    Y <- model.response(mf, "any")
-    if (length(dim(Y)) == 1L) {
-        nm <- rownames(Y)
-        dim(Y) <- NULL
-        if (!is.null(nm)) 
-            names(Y) <- nm
-    }
-    X <- if (!is.empty.model(mt)) 
-        model.matrix(mt, mf, contrasts)
-    else matrix(, NROW(Y), 0L)
-    offset <- as.vector(model.offset(mf))
-    if (!is.null(offset)) {
-        if (length(offset) != NROW(Y)) 
-            stop(gettextf("number of offsets is %d should equal %d (number of observations)", 
-                length(offset), NROW(Y)), domain = NA)
-    }
-    if (is.null(offset)) 
-        offset <- rep.int(0, NROW(Y))
-    fit <- gcmr.fit(X, Y, offset, marginal, cormat, start, fixed, options)
-    fit$call <- call
-    fit
+  }
+  mf$formula <- formula
+  mf[[1L]] <- as.name("model.frame")
+  mf <- eval(mf, parent.frame())
+  mt <- terms(formula, data = data)
+  mtX <- terms(formula, data = data, rhs = 1L)
+  if(!simple.formula)
+    mtZ <- delete.response(terms(formula, data = data, rhs = 2L))
+  Y <- model.response(mf, "any")
+  if (length(dim(Y)) == 1L) {
+    nm <- rownames(Y)
+    dim(Y) <- NULL
+    if (!is.null(nm))
+      names(Y) <- nm
+  }
+  X <- model.matrix(mtX, mf, contrasts)
+  Z <- if(!simple.formula)
+    model.matrix(mtZ, mf, contrasts)
+  expand_offset <- function(offset) {
+    if (is.null(offset)) offset <- 0
+    if (length(offset) == 1)
+      offset <- rep.int(offset, NROW(Y))
+    as.vector(offset)
+  }
+  offsetX <- expand_offset(model.offset(model.part(formula, data = mf, rhs = 1L, terms = TRUE)))
+  offsetZ <- if(!simple.formula)
+    expand_offset(model.offset(model.part(formula, data = mf, rhs = 2L, terms = TRUE)))
+  if (!is.null(call$offset))
+    offsetX <- offsetX + expand_offset(mf[, "(offset)"])
+  offset <- list(mean = offsetX, precision = offsetZ)
+  fit <- gcmr.fit(X, Y, Z, offset, marginal, cormat, start, fixed, options)
+  fit$call <- call
+  fit
 }
 
-gcmr.fit <- function(x=rep(1,NROW(y)), y, offset=rep(0,NROW(y)), marginal, cormat, start, fixed, options=gcmr.options()) {
-   if( is.function( marginal ) )
-     marginal <- marginal()
-   if( is.function( cormat ) )
-     cormat <- cormat()
-    ## arguments check
-    if ( !inherits( marginal , "marginal.gcmr" ) ) stop("Unknown marginal")
-    if ( !inherits( cormat , "cormat.gcmr" ) ) stop("Unknown cormat")
-    ## gcmr object
-    nb <- marginal$npar(x)
-    ng <- cormat$npar
-    not.na <- apply(cbind(y,x,offset),1,function(z) !any(is.na(z)))
-    m <- structure(list(y=as.matrix(y), x=as.matrix(x), offset=as.matrix(offset),
-                        not.na=not.na, n=sum(not.na), marginal=marginal, cormat=cormat,
-                        ibeta=1:nb, igamma=if (ng) (nb+1):(nb+ng) else NULL,
-                        call=match.call()), class="gcmr")
+gcmr.fit <- function(x=rep(1,NROW(y)), y, z=NULL, offset=NULL, marginal, cormat, start, fixed, options=gcmr.options()) {
+  if( is.function( marginal ) )
+    marginal <- marginal()
+  if( is.function( cormat ) )
+    cormat <- cormat()
+  ## arguments check
+  if ( !inherits( marginal , "marginal.gcmr" ) ) stop("Unknown marginal")
+  if ( !inherits( cormat , "cormat.gcmr" ) ) stop("Unknown cormat")
+  ## gcmr object
+  nb <- marginal$npar(x, z)
+  ng <- cormat$npar
+  if (is.null(offset))
+    offset <- rep.int(0, NROW(y))
+  if (!is.list(offset))
+    offset <- list(mean = offset, precision = rep.int(0, NROW(y)))
+  else{
+    if (is.null(offset$mean))
+      offset$mean <- rep.int(0, NROW(y))
+    if (is.null(offset$precision))
+      offset$precision <- rep.int(0, NROW(y))
+  }
+  not.na <- apply(cbind(y,x,z,offset$mean,offset$precision),1,function(x) !any(is.na(x)))
+  m <- structure(list(y=as.matrix(y), x=as.matrix(x), z=if(!is.null(z)) as.matrix(z) else NULL,
+                      offset=list(mean=as.matrix(offset$mean), precision=as.matrix(offset$precision)),
+                      not.na=not.na, n=sum(not.na), marginal=marginal, cormat=cormat, ibeta=1:nb,
+                      igamma=if (ng) (nb+1):(nb+ng) else NULL, call=match.call()), class="gcmr")
     if ( missing(start) ) {
-        lambda <- marginal$start(m$y[not.na,],m$x[not.na,,drop=FALSE],m$offset[not.na,])
+        lambda <- marginal$start(m$y[not.na,],m$x[not.na,,drop=FALSE],m$z[not.na,,drop=FALSE],
+                                 list(mean = m$offset$mean[not.na,], precision = m$offset$precision[not.na,]))
         tau <- cormat$start()
         m$estimate <- c(lambda,tau)
         ll <- attr(lambda,"lower")
@@ -261,7 +294,7 @@ estfun.gcmr <- function(x,...) x$jac
 bread.gcmr <- function(x,...) pinv(x$hessian)*x$n
 
 vcov.gcmr <- function(object, type=c("hessian","sandwich","vscore","cluster","hac"),...) {
-    if ( !inherits( object , "gcmr" ) ) stop("First argument must be a mr object")
+    if ( !inherits( object , "gcmr" ) ) stop("First argument must be a gcmr object")
     type <- match.arg(type)
     if (type=="sandwich") {
         if (is.null(object$hessian) || is.null(object$jac)) object <- jhess(object)
@@ -329,7 +362,9 @@ residuals.gcmr <- function (object, type=c("conditional","marginal"),
     }
     a <- object$marginal$dp(object$y[object$not.na,],
                             object$x[object$not.na,,drop=FALSE],
-                            object$offset[object$not.na,],
+                            object$z[object$not.na,,drop=FALSE],
+                            list(mean = object$offset$mean[object$not.na,],
+                                 precision = object$offset$precision[object$not.na,]),
                             object$estimate[object$ibeta])
     if (cond) {
         q <- object$cormat$chol(object$estimate[object$igamma],object$not.na)
@@ -365,7 +400,9 @@ plotint <- function(r) {
 }
 
 profile.gcmr <- function(fitted , which , low , up, npoints = 10 , display = TRUE , alpha = 0.05, ... ) {
-    if ( !inherits( fitted , "gcmr" ) ) stop("first argument must be a mr object")
+    if ( !inherits( fitted , "gcmr" ) ) stop("first argument must be a gcmr object")
+    if ( which > NCOL( fitted$x ) )
+      stop("profile likelihood is computed only for mean response parameters")
     if(missing(low)){
       this.se <- se(fitted)[which]
       low <- coef(fitted)[which]-3*this.se
@@ -402,7 +439,7 @@ hausman <- function(m, method=c("one-step","full"),
     m$options$nrep <- nrep
     m$options$no.se <- TRUE
     ## ind lik
-    mind <- gcmr.fit(x=m$x,y=m$y,offset=m$offset,marginal=m$marg,cormat=ind.cormat(),fixed=m$fixed[m$ibeta],options=m$options)
+    mind <- gcmr.fit(x=m$x,y=m$y,z=m$z,offset=m$offset,marginal=m$marg,cormat=ind.cormat(),fixed=m$fixed[m$ibeta],options=m$options)
     ## differences in the marginal parameters
     betaml <- coef(m)[m$ibeta]
     betaind <- mind$estimate
@@ -413,10 +450,12 @@ hausman <- function(m, method=c("one-step","full"),
     R <- lapply(R,t)
     y <- m$y[m$not.na,]
     x <- m$x[m$not.na,,drop=FALSE]
-    offset <- m$offset[m$not.na,]
+    z <- m$z[m$not.na,,drop=FALSE]
+    offset <- list(mean = m$offset$mean[m$not.na,],
+                   precision = m$offset$precision[m$not.na,])
     sim <- function() {
         u <- pnorm(unlist(lapply(R, function(x) x %*% rnorm(NROW(x)))))
-        m$marginal$q(u,x,offset,betaml)
+        m$marginal$q(u,x,z,offset,betaml)
     }
     ## bootstrap estimate of the the variance of the difference
     vdelta <- var(if (method=="one-step") dh1(m,mind,sim,nboot) else dhf(m,mind,sim,nboot))
@@ -450,9 +489,10 @@ dh1 <- function(m, mind, sim, nboot) {
 
 dhf <- function(m, mind, sim, nboot) {
     theta <- m$estimate
-    m$options$opt <- mind$options$opt <- function(start,loglik) {
-        ans <- nlminb(start,function(x) -sum(loglik(x)),
-                      control=list(rel.tol=1e-4,iter.max=3*length(theta)))
+    m$options$opt <- mind$options$opt <- function(start,loglik, lower, upper) {
+        ans <- nlminb(start, function(x) -sum(loglik(x)),
+                      control=list(rel.tol=1e-4,iter.max=3*length(theta)),
+                      lower=lower, upper=upper)
         list(estimate=ans$par,maximum=ans$objective)
     }
     d <- matrix(0,nboot,length(coef(mind)))
@@ -462,7 +502,7 @@ dhf <- function(m, mind, sim, nboot) {
         m$y[m$not.na,] <- mind$y[mind$not.na,] <- sim()
         m$estimate <- theta
         m <- truefit(m)
-        mind$estimate <- mind$marginal$start(mind$y,mind$x,mind$offset)
+        mind$estimate <- mind$marginal$start(mind$y,mind$x,mind$z,mind$offset)
         mind <- truefit(mind)
         d[nb,] <- coef(m)[m$ibeta]-coef(mind)
     }

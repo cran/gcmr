@@ -7,6 +7,8 @@
 \value{
 At the moment, the following are implemented:
 \tabular{ll}{ 
+
+\code{\link{beta.marg}} \tab beta margins. \cr
 \code{\link{binomial.marg}} \tab binomial margins. \cr
 \code{\link{Gamma.marg}} \tab Gamma margins. \cr
 \code{\link{gaussian.marg}} \tab normal margins. \cr 
@@ -22,12 +24,13 @@ Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{E
 Guido Masarotto and Cristiano Varin.
 }
 \seealso{\code{\link{gcmr}},
-  \code{\link{binomial.marg}},
-  \code{\link{gaussian.marg}},
-  \code{\link{Gamma.marg}},
-  \code{\link{negbin.marg}},
-  \code{\link{poisson.marg}},   
-  \code{\link{weibull.marg}},
+	\code{\link{beta.marg}},		
+  	\code{\link{binomial.marg}},
+  	\code{\link{gaussian.marg}},
+	\code{\link{Gamma.marg}},
+  	\code{\link{negbin.marg}},
+  	\code{\link{poisson.marg}},   
+  	\code{\link{weibull.marg}},
 }
 \keyword{regression}
 \keyword{nonlinear}
