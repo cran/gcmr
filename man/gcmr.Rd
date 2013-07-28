@@ -72,9 +72,9 @@ Gaussian copula marginal regression models (Song, 2000; Masarotto and Varin, 201
 
 This package contains \R functions related to the paper Masarotto and Varin (2012). The main function is \code{\link{gcmr}} that fits Gaussian copula marginal regression models. Inference is performed through a likelihood approach. Computation of the exact likelihood is possible only for continuous responses, otherwise the likelihood function is approximated by importance sampling. See Masarotto and Varin (2012) for details.
 
-Standard formula \code{y ~ x1 + x2} indicates that the mean response is modelled as a function of covariates \code{x1} and \code{x2} through an appropriate link function. Extended formula  \code{y ~ x1 + x2 | z1 + z2} indicates that the dispersion (or the shape) parameter of the marginal distribution is modelled as a function of covariates \code{z1} and \code{z2}. Dispersion (or shape) parameters are always modelled on logarithm scale. Covariates for mean and dispersion can be overlapping.
+Standard formula \code{y ~ x1 + x2} indicates that the mean response is modelled as a function of covariates \code{x1} and \code{x2} through an appropriate link function. Extended formula  \code{y ~ x1 + x2 | z1 + z2} indicates that the dispersion (or the shape) parameter of the marginal distribution is modelled as a function of covariates \code{z1} and \code{z2}. Dispersion (or shape) parameters are always modelled on logarithm scale. Covariates for mean and dispersion can be overlapping. The model specification is inspired by beta regression as implemented in \code{\link{betareg}} (Cribari-Neto and Zeileis, 2010) through extended \code{\link{Formula}} objects (Zeileis and Croissant, 2010). 
 
-For binomial marginals specified by \code{binomial.marg} the response is specified as a factor when the first level denotes failure and all others success or as a two-column matrix with the columns giving the numbers of successes and failures. 
+For binomial marginals specified by \code{\link{binomial.marg}} the response is specified as a factor when the first level denotes failure and all others success or as a two-column matrix with the columns giving the numbers of successes and failures. 
 
 \code{gcmr.fit} is the workhorse function: it is not normally called directly but can be more efficient where the response vector and design matrix have already been calculated.
 }
@@ -101,15 +101,21 @@ An object of class \code{"gcmr"} with the following components:
 Functions \code{\link{coefficients}}, \code{\link{logLik}}, \code{\link{vcov.gcmr}}, \code{\link{se}} and \code{\link{residuals.gcmr}} can be used to extract various useful features of the value returned by \code{\link{gcmr}}.
 }
 \references{
-Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
+Cribari-Neto, F. and Zeileis, A. (2010). Beta regression in R. \emph{Journal of Statistical Software} \bold{34}, 1--24. \url{http://www.jstatsoft.org/v34/i02/}.
+
+Guolo, A. and Varin, C. (2013). Beta regression for time series analysis of bounded data, with application to Canada Google Flu Trends. Submitted.
+
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 
 Song, P. X.-K. (2000). Multivariate dispersion models generated from Gaussian copula. \emph{Scandinavian Journal of Statistics} \bold{27}, 305--320.
+
+Zeileis, A. and Croissant, Y. (2010). Extended model formulas in R: Multiple parts and multiple responses. \emph{Journal of Statistical Software} \bold{34}, 1--13. \url{http://www.jstatsoft.org/v34/i01/}.
 }
 \author{
 Guido Masarotto and Cristiano Varin.
 }
 \seealso{
-\code{\link{cormat.gcmr}}, \code{\link{marginal.gcmr}}, \code{\link{gcmr.options}}
+\code{\link{cormat.gcmr}}, \code{\link{marginal.gcmr}}, \code{\link{gcmr.options}}, \code{\link{Formula}}, \code{\link{betareg}}.
 }
 \examples{
 ## Warning: Likelihood approximated using only a limited number 
@@ -137,8 +143,8 @@ cormat = arma.cormat( p = 1 ) )
 ## now with dispersion modelling
 gcmr( ldeaths ~ trend + sinTerm + cosTerm | trend + sinTerm + cosTerm, marginal = 
 Gamma.marg( link = "log" ), cormat = arma.cormat( p = 1 ) )
-## Prater's Petrol Refinery Data
-## Beta regression with exchangeable within clustered correlation
+## Prater's Petrol Refinery Data.
+## Beta regression with exchangeable within-cluster correlation
 gcmr( I( Y/100 ) ~ SG + VP + V10 + EP, marginal = beta.marg, cormat = cluster.cormat( 
 id = as.numeric(No), type = "exchangeable" ), data = petrol )		
 ## (results suggest no evidence of within-cluster correlation)

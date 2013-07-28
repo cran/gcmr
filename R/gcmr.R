@@ -66,16 +66,18 @@ truefit <- function(x) {
     big <- -sqrt(.Machine$double.xmax)
     nrep <- if(x$marginal$type=="numeric") 1 else x$options$nrep
     for ( i in 1:length(nrep) ) {
-        log.lik <- llik(x,nrep[i],big)
+      log.lik <- llik(x,nrep[i],big)
+      if( length( theta[ifree] ) > 0 ){
         if( i!=length(nrep) ) # no warnings until last optimization
           ans <- suppressWarnings( x$options$opt(theta[ifree] , log.lik , low, up) )
         else
           ans <- x$options$opt( theta[ifree] , log.lik , low, up)
         theta[ifree] <- ans$estimate
+      }
     }
     names(theta) <- names(x$estimate)
     x$estimate <- theta
-    x$maximum <- ans$maximum
+    x$maximum <- if( length( theta[ifree] ) > 0 ) ans$maximum else -sum( log.lik( theta ) )
     x
 }
 
@@ -237,40 +239,43 @@ gcmr.fit <- function(x=rep(1,NROW(y)), y, z=NULL, offset=NULL, marginal, cormat,
                       offset=list(mean=as.matrix(offset$mean), precision=as.matrix(offset$precision)),
                       not.na=not.na, n=sum(not.na), marginal=marginal, cormat=cormat, ibeta=1:nb,
                       igamma=if (ng) (nb+1):(nb+ng) else NULL, call=match.call()), class="gcmr")
-    if ( missing(start) ) {
-        lambda <- marginal$start(m$y[not.na,],m$x[not.na,,drop=FALSE],m$z[not.na,,drop=FALSE],
-                                 list(mean = m$offset$mean[not.na,], precision = m$offset$precision[not.na,]))
-        tau <- cormat$start()
-        m$estimate <- c(lambda,tau)
-        ll <- attr(lambda,"lower")
-        lt <- attr(tau,"lower")
-        m$lower <- c(if(is.null(ll)) rep(-Inf,length(lambda)) else ll,
-                     if(is.null(lt)) rep(-Inf,length(tau)) else lt)
-        ll <- attr(lambda,"upper")
-        lt <- attr(tau,"upper")
-        m$upper <- c(if(is.null(ll)) rep(Inf,length(lambda)) else ll,
-                     if(is.null(lt)) rep(Inf,length(tau)) else lt)
-    } else {
-        m$estimate <- start
-        ll <- attr(start,"lower")
-        m$lower <- if(is.null(ll)) rep(-Inf,length(start)) else ll
-        ll <- attr(start,"upper")
-        m$upper <- if(is.null(ll)) rep(Inf,length(start)) else ll
-    }
-    if (length(m$estimate) != nb+ng) stop("mismatch in the number of initial parameters")
-    if (length(m$lower) != nb+ng) stop("length of lower different from the number of the parameters")
-    if (length(m$upper) != nb+ng) stop("length of upper different from the number of the parameters")
-   if ( missing(fixed) ) {
-        m$fixed <- rep( NA , length(m$estimate) )
-    } else {
-        if (length(fixed) != length(m$estimate) ) stop("fixed has a wrong length")
-        m$fixed <- fixed
-    }
-    m$options <- do.call(gcmr.options,options)
-    # compute estimate
-    m <- truefit(m)
-    # and s.e. and return
-    if (m$options$no.se) m else jhess(m)
+  if ( missing(start) ) {
+    lambda <- marginal$start(m$y[not.na,],m$x[not.na,,drop=FALSE],m$z[not.na,,drop=FALSE],
+                             list(mean = m$offset$mean[not.na,], precision = m$offset$precision[not.na,]))
+    tau <- cormat$start()
+    m$estimate <- c(lambda,tau)
+    ll <- attr(lambda,"lower")
+    lt <- attr(tau,"lower")
+    m$lower <- c(if(is.null(ll)) rep(-Inf,length(lambda)) else ll,
+                 if(is.null(lt)) rep(-Inf,length(tau)) else lt)
+    ll <- attr(lambda,"upper")
+    lt <- attr(tau,"upper")
+    m$upper <- c(if(is.null(ll)) rep(Inf,length(lambda)) else ll,
+                 if(is.null(lt)) rep(Inf,length(tau)) else lt)
+  } else {
+    m$estimate <- start
+    ll <- attr(start,"lower")
+    m$lower <- if(is.null(ll)) rep(-Inf,length(start)) else ll
+    ll <- attr(start,"upper")
+    m$upper <- if(is.null(ll)) rep(Inf,length(start)) else ll
+  }
+  if (length(m$estimate) != nb+ng) stop("mismatch in the number of initial parameters")
+  if (length(m$lower) != nb+ng) stop("length of lower different from the number of the parameters")
+  if (length(m$upper) != nb+ng) stop("length of upper different from the number of the parameters")
+  if ( missing(fixed) ) {
+    m$fixed <- rep( NA , length(m$estimate) )
+  } else {
+    if (length(fixed) != length(m$estimate) ) stop("fixed has a wrong length")
+    m$fixed <- fixed
+  }
+  ifree <- is.na( m$fixed )
+  if( length( m$estimate[ifree] ) == 0 ) ## if all parameters are fixed, skip se
+    options$no.se <- TRUE
+  m$options <- do.call(gcmr.options,options)
+  ## compute estimate
+  m <- truefit(m)
+  ## and s.e. and return
+  if ( m$options$no.se ) m else jhess(m)
 }
 
 coef.gcmr <- function(object,...) object$estimate

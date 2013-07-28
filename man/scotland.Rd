@@ -20,11 +20,11 @@ A data frame with the 56 observations with the following variables
 }
 }
 \source{
-Waller, L.A. and Gotway, C.A. (2004) \emph{Applied Spatial Statistics for Public Health Data}. New York: John Wiley and Sons.
+Waller, L.A. and Gotway, C.A. (2004). \emph{Applied Spatial Statistics for Public Health Data}. New York: John Wiley and Sons.
 \url{http://www.sph.emory.edu/~lwaller/book/ch2/scotland.dat}
 }
 \references{
-Clayton D. and Kaldor J. (1987) Empirical Bayes estimates of age-standardized relative risks for use in disease mapping. \emph{Biometrics} \bold{43}, 671--681.
+Clayton D. and Kaldor J. (1987). Empirical Bayes estimates of age-standardized relative risks for use in disease mapping. \emph{Biometrics} \bold{43}, 671--681.
 }
 \examples{
 data(scotland)

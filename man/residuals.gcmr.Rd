@@ -32,7 +32,7 @@ Conditional quantile residuals are normal quantiles of Rosenblatt (1952) transfo
 \references{
 Dunn, P.K. and Smyth, G.K. (1996). Randomized quantile residuals. \emph{Journal of Computational and Graphical Statistics} \bold{5}, 236--244.
 
-Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 
 Rosenblatt, M. (1952). Remarks on a multivariate transformation. \emph{The Annals of Mathematical Statistics} \bold{23}, 470--472.
 

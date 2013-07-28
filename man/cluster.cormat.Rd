@@ -33,7 +33,7 @@ An object of class \code{\link{cormat.gcmr}} representing a correlation matrix f
 The correlation matrices are inherited from the \code{\link{nlme}} package (Pinheiro and Bates, 2000).
 }
 \references{
-Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 
 Pinheiro, J.C. and Bates, D.M. (2000). \emph{Mixed-Effects Models in S and S-PLUS}. Springer.
 }
@@ -41,7 +41,7 @@ Pinheiro, J.C. and Bates, D.M. (2000). \emph{Mixed-Effects Models in S and S-PLU
 Guido Masarotto and Cristiano Varin.
 }
 \seealso{
-\code{\link{gcmr}}, \code{\link{nlme}}
+\code{\link{gcmr}}, \code{\link{nlme}}.
 }
 \keyword{regression}
 \keyword{nonlinear}

@@ -2,7 +2,7 @@
 \alias{estfun.gcmr}
 \alias{bread.gcmr}
 \title{
-Bread and Salami for Sandwich Estimation in Gaussian Marginal Regression Models
+Bread and Salami for Sandwich Variance Estimation in Gaussian Marginal Regression Models
 }
 \description{
 Extracts empirical estimating functions (salami) and the inverse of (minus) the Hessian (bread) of a fitted Gaussian marginal regression model for computation of the sandwich variance-covariance matrix (Zeileis, 2006). 
@@ -35,7 +35,7 @@ Zeileis, A. (2006). Object-oriented computation of sandwich estimators. \emph{Jo
 Guido Masarotto and Cristiano Varin.
 }
 \seealso{
-\code{\link{bread}}, \code{\link{estfun}}, \code{\link{gcmr}}, \code{\link{sandwich}}
+\code{\link{bread}}, \code{\link{estfun}}, \code{\link{gcmr}}, \code{\link{sandwich}}.
 }
 \keyword{regression}
 \keyword{nonlinear}

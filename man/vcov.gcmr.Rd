@@ -23,7 +23,7 @@ type of variance-covariance matrix. This can be one of the following:
 \code{hac} \tab heteroskedasticity and autocorrelation consistent estimator for time series of Andrews (1991).
 }
 }
-  \item{\dots}{
+\item{\dots}{
 further arguments passed to function \code{\link{vcovHAC}}.
 }
 }
@@ -34,9 +34,9 @@ further arguments passed to function \code{\link{vcovHAC}}.
 A matrix containing the estimated covariances between the parameter estimates of a fitted \code{\link{gcmr}} model.
 }
 \references{
-Andrews, D.W.K. (1991). Heteroskedasticity and autocorrelation consistent covariance matrix estimation. \emph{Econometrica}, \bold{59}, 817--858.
+Andrews, D.W.K. (1991). Heteroskedasticity and autocorrelation consistent covariance matrix estimation. \emph{Econometrica} \bold{59}, 817--858.
 
-Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 
 Zeleis, A. (2006). Object-oriented computation of sandwich estimators. \emph{Journal of Statistical Software} \bold{16}, issue 9.
 }
@@ -44,7 +44,7 @@ Zeleis, A. (2006). Object-oriented computation of sandwich estimators. \emph{Jou
 Guido Masarotto and Cristiano Varin.
 }
 \seealso{
-\code{\link{gcmr}}, \code{\link{sandwich}}, \code{\link{vcovHAC}}
+\code{\link{gcmr}}, \code{\link{sandwich}}, \code{\link{vcovHAC}}.
 }
 \examples{
 data(polio)

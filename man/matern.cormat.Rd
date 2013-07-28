@@ -26,13 +26,13 @@ The Matern correlation function is inherited from the \code{geoR} package (Diggl
 \references{
 Diggle, P. and Ribeiro, P.J. (2007). \emph{Model-based Geostatistics}. Springer.
 
-Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 }
 \author{
 Guido Masarotto and Cristiano Varin.
 }
 \seealso{
-\code{\link{gcmr}}, \code{\link{matern}}
+\code{\link{gcmr}}, \code{\link{matern}}.
 }
 \keyword{regression}
 \keyword{nonlinear}

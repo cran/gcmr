@@ -21,7 +21,7 @@ the index of the mean response parameter which should be profiled.
 the lower limit used in computation of the profile likelihood. If this is \code{missing}, then the lower limit is set equal to the estimate minus three times its standard error.
 }
   \item{up}{
-the upper limit used in computation of the profile likelihood. If this is \code{missing}, then the lower limit is set equal to the estimate plus three times its standard error.
+the upper limit used in computation of the profile likelihood. If this is \code{missing}, then the upper limit is set equal to the estimate plus three times its standard error.
 }
   \item{npoints}{
 number of points used in computation of the profile likelihood. Default is \code{10}.
@@ -33,7 +33,7 @@ should the profile likelihood be displayed or not? default is \code{TRUE}.
 the significance level, default is \code{0.05}. 
 }
 \item{...}{
-further argument. 
+further arguments. 
 }
 }
 \details{
@@ -45,7 +45,7 @@ A list with the following components:
 \item{profile}{values of the profile likelihood.}
 }
 \references{
-Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 }
 \author{
 Guido Masarotto and Cristiano Varin.

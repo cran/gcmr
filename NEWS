@@ -1,3 +1,8 @@
+Version 0.6.1
+-------------
+- argument fixed now allows to fix all model parameters at the same time
+- documentation updated; appropriate references included
+
 Versin 0.6.0
 -------------
 - extended formula for dispersion modeling

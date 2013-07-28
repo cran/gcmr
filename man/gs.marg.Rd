@@ -42,11 +42,11 @@ a specification for the model link function. See \code{\link{family}} for the sp
 }
 }
 \details{
-Beta marginals specified by \code{beta.marg} are parametrized in terms of mean and dispersion as in Ferrari and Cribari-Neto (2004). 
+Beta marginals specified by \code{beta.marg} are parametrized in terms of mean and dispersion as in \code{\link{betareg}}. See Cribari-Neto and Zeileis (2010) and Ferrari and Cribari-Neto (2004). 
 
 For binomial marginals specified by \code{binomial.marg} the response is specified as a factor when the first level denotes failure and all others success or as a two-column matrix with the columns giving the numbers of successes and failures.
 
-Negative binomial marginals implemented in \code{negbin.marg} are parameterized such that \eqn{var(Y)=E(Y)+k E(Y)^2}. 
+Negative binomial marginals implemented in \code{negbin.marg} are parametrized such that \eqn{var(Y)=E(Y)+k E(Y)^2}. 
 
 For back-compatibility with previous versions of the \code{gcmr} package, short names for the marginals \code{bn.marg}, \code{gs.marg}, \code{nb.marg}, and \code{ps.marg} remain valid as an alternative to (preferred) longer versions \code{binomial.marg},  \code{gaussian.marg}, \code{negbin.marg}, and \code{poisson.marg}.
 }
@@ -54,15 +54,17 @@ For back-compatibility with previous versions of the \code{gcmr} package, short 
 An object of class \code{\link{marginal.gcmr}} representing the marginal component. 
 }
 \references{
-Ferrari, S.L.P., and Cribari-Neto, F. (2004). Beta regression for modeling rates and proportions. \emph{Journal of Applied Statistics}, \bold{31} (7), 799--815.
+Cribari-Neto, F. and Zeileis, A. (2010). Beta regression in R. \emph{Journal of Statistical Software} \bold{34}, 1--24. \url{http://www.jstatsoft.org/v34/i02/}.
 
-Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
+Ferrari, S.L.P. and Cribari-Neto, F. (2004). Beta regression for modeling rates and proportions. \emph{Journal of Applied Statistics} \bold{31} (7), 799--815.
+
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 }
 \author{
 Guido Masarotto and Cristiano Varin.
 }
 \seealso{
-\code{\link{gcmr}}
+\code{\link{gcmr}}, \code{\link{betareg}}.
 }
 \keyword{regression}
 \keyword{nonlinear}

@@ -2,7 +2,7 @@
 \title{Correlation Matrices for Gaussian Copula Regression Models}
 \alias{cormat.gcmr}
 \description{
-  Class of correlation matrices available in the \code{gcmr} library. 
+  Class of correlation matrices available in the \code{\link{gcmr}} package. 
 }
 \value{
 At the moment, the following are implemented:
@@ -14,7 +14,7 @@ At the moment, the following are implemented:
 }
 }
 \references{
-Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics}, \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 }
 \author{
 Guido Masarotto and Cristiano Varin.
@@ -23,7 +23,7 @@ Guido Masarotto and Cristiano Varin.
   \code{\link{ind.cormat}},
   \code{\link{arma.cormat}},
   \code{\link{cluster.cormat}}, 
-  \code{\link{matern.cormat}},
+  \code{\link{matern.cormat}}.
 }
 \keyword{regression}
 \keyword{nonlinear}
