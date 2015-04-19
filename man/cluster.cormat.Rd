@@ -1,7 +1,7 @@
 \name{cluster.cormat}
 \alias{cluster.cormat}
 \title{
-Gaussian Copula Marginal Regression with Longitudinal/Clustered Data Correlation Matrix
+Longitudinal/Clustered Data Correlation
 }
 \description{
 Sets longitudinal/clustered data correlation in Gaussian copula regression models.

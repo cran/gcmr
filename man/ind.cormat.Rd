@@ -1,10 +1,10 @@
 \name{ind.cormat}
 \alias{ind.cormat}
 \title{
-Gaussian Copula Marginal Regression with Working Independence Correlation Matrix
+Working Independence Correlation
 }
 \description{
-Sets working independence correlation matrix in Gaussian copula marginal regression models.
+Sets working independence correlation in Gaussian copula marginal regression models.
 }
 \usage{
 ind.cormat()

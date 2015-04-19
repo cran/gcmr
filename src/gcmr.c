@@ -123,10 +123,10 @@ static void csampler( int *ipar, double *chol, double *limits, double *llik) {
    Likelihood and residuals computation in the continuos case 
 */
 static void bsolver( int *ipar, double *chol, double *limits, double *llik) {
-    int g, ig, ng, i, j , ij , n = ipar[0] , m = ipar[1] , nstrata = ipar[2],
+    int g, ig, ng, i, j , ij , n = ipar[0] , nstrata = ipar[2],
 	*lstrata = ipar + 3;
-    double *a = limits, *b = limits+n, ZERO=0, ONE=1, TWO=2, yi, cii , lk , z, 
-	*es=b , EPS = sqrt(DOUBLE_EPS), EPS1=1-EPS;
+    double *a = limits, *b = limits+n, ZERO=0, ONE=1, TWO=2, yi, cii, z, 
+	*es = b, EPS = sqrt(DOUBLE_EPS), EPS1=1-EPS;
     for ( g=0, i=0 ; g<nstrata ; g++) {
 	ng = lstrata[g] ;
 	for ( ig=0 ; ig<ng ; ig++, i++) {

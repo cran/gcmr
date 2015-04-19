@@ -1,7 +1,7 @@
 \name{arma.cormat}
 \alias{arma.cormat}
 \title{
-Gaussian Copula Marginal Regression with ARMA(p,q) Correlation Matrix
+ARMA(p,q) Correlation 
 }
 \description{
 Sets ARMA(p,q) correlation in Gaussian copula regression models.

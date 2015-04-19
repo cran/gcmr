@@ -1,3 +1,14 @@
+Version 0.7.0
+-------------
+- depends and imports rearranged to conform with CRAN policies
+- plot method
+- summary and print methods redesigned
+- fitted.values returned
+- new examples
+- documentation corrected and updated
+- bug in 'beta.marg' fixed
+- subset affects id in 'cluster.cormat' 
+
 Version 0.6.1
 -------------
 - argument fixed now allows to fix all model parameters at the same time

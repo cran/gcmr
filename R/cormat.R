@@ -94,13 +94,13 @@ matern.cormat <- function(D, alpha=0.5) {
     ans <- list()
     ans$npar <- 1
     ans$start <- function() {
-        tau <- median(D) 
-        names(tau) <- c("range")
+        tau <- median(D)
+        names(tau) <- c("tau")
         attr(tau,"lower") <- sqrt(.Machine$double.eps)
         tau
     }
     ans$chol <- function( tau, not.na ){
-        S <- geoR:::matern(D, tau, alpha)
+        S <- geoR::matern(D, tau, alpha)
         q <- try(chol(S[not.na,not.na]),silent=TRUE)
         if( inherits(q,"try-error") ) NULL else q
     }

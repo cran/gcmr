@@ -1,5 +1,5 @@
 \name{marginal.gcmr}
-\title{Marginal Component in Marginal Regression Models}
+\title{Marginals for Gaussian Copula Marginal Regression}
 \alias{marginal.gcmr}
 \description{
   Class of marginals available in the \code{gcmr} library. 
@@ -8,13 +8,13 @@
 At the moment, the following are implemented:
 \tabular{ll}{ 
 
-\code{\link{beta.marg}} \tab beta margins. \cr
-\code{\link{binomial.marg}} \tab binomial margins. \cr
-\code{\link{Gamma.marg}} \tab Gamma margins. \cr
-\code{\link{gaussian.marg}} \tab normal margins. \cr 
-\code{\link{negbin.marg}} \tab negative binomial margins. \cr
-\code{\link{poisson.marg}} \tab Poisson margins. \cr 
-\code{\link{weibull.marg}} \tab Weibull margins. \cr
+\code{\link{beta.marg}} \tab beta marginals. \cr
+\code{\link{binomial.marg}} \tab binomial marginals. \cr
+\code{\link{Gamma.marg}} \tab Gamma marginals. \cr
+\code{\link{gaussian.marg}} \tab Gaussian marginals. \cr 
+\code{\link{negbin.marg}} \tab negative binomial marginals. \cr
+\code{\link{poisson.marg}} \tab Poisson marginals. \cr 
+\code{\link{weibull.marg}} \tab Weibull marginals. \cr
 }
 }
 \references{

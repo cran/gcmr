@@ -43,12 +43,15 @@ gaussian.marg <- function(link = "identity" ) {
     }
     ans$q <- function(p, x, z, offset, lambda) {
       nb <- length(lambda)
-      mu <- fm$linkinv( x %*% beta + offset$mean )
+      mu <- fm$linkinv( x %*% lambda[ 1:NCOL(x) ] + offset$mean )
       if( is.null(z) )
         sd <- lambda[ nb ]
       else
         sd <- exp( z %*% lambda[ ( NCOL(x)+1 ):nb ] + offset$precision )
       qnorm( p , mu , sd )
+    }
+    ans$fitted.val <- function(x, z, offset, lambda){
+        fm$linkinv( x %*% lambda[ 1:NCOL(x) ] + offset$mean )
     }
     ans$type <- "numeric"
     class(ans) <- c( "marginal.gcmr")
@@ -88,6 +91,9 @@ binomial.marg <- function(link = "logit") {
         q <- qbinom( p, sizes, mu )
         cbind( q, sizes-q )
     }
+    ans$fitted.val <- function(x, z, offset, lambda){
+        fm$linkinv( x %*% lambda + offset$mean )
+    }
     ans$type <- "integer"
     class(ans) <- c( "marginal.gcmr")
     ans
@@ -111,6 +117,9 @@ poisson.marg <- function(link = "log") {
         mu <- fm$linkinv( x %*% lambda + offset$mean )
         qpois( p , mu )
     }
+    ans$fitted.val <- function(x, z, offset, lambda){
+        fm$linkinv( x %*% lambda + offset$mean )
+    }
     ans$type <- "integer"
     class(ans) <- c( "marginal.gcmr")
     ans
@@ -123,41 +132,44 @@ negbin.marg <- function(link = "log" ) {
   fm <- poisson( substitute( link ) )
   ans <- list()
   ans$start <- function(y, x, z, offset) {
-    if( !is.null(z) )
-      offset <- list( as.vector(offset$mean), as.vector(offset$precision) ) 
-    eps <- sqrt(.Machine$double.eps)
-    m <- glm.fit( x , y, offset=offset$mean, family=fm )
-    mu <- fitted(m)
-    kappa <- max( 10*eps , mean( ( (y-mu)^2-mu )/mu^2 ) )
-    lambda <- c( coef(m), rep.int( 0, NCOL(z) ) )
-    lambda[ NCOL(x)+1 ] <- ifelse( is.null(z), kappa, log(kappa) )
-    if( is.null(z) ){
-      names( lambda ) <- c( dimnames( as.matrix(x) )[[ 2L ]], "dispersion" )
-      attr( lambda, "lower" ) <- c( rep(-Inf, NCOL(x) ), eps )
-    }
-    else
-      names( lambda ) <- c( paste("mean", dimnames( as.matrix(x) )[[ 2L ]], sep="."),
-                           paste("dispersion", dimnames( as.matrix(z) )[[ 2L ]], sep=".") )
-    lambda
+      if( !is.null(z) )
+        offset <- list( as.vector(offset$mean), as.vector(offset$precision) ) 
+      eps <- sqrt(.Machine$double.eps)
+      m <- glm.fit( x , y, offset=offset$mean, family=fm )
+      mu <- fitted(m)
+      kappa <- max( 10*eps , mean( ( (y-mu)^2-mu )/mu^2 ) )
+      lambda <- c( coef(m), rep.int( 0, NCOL(z) ) )
+      lambda[ NCOL(x)+1 ] <- ifelse( is.null(z), kappa, log(kappa) )
+      if( is.null(z) ){
+          names( lambda ) <- c( dimnames( as.matrix(x) )[[ 2L ]], "dispersion" )
+          attr( lambda, "lower" ) <- c( rep(-Inf, NCOL(x) ), eps )
+      }
+      else
+          names( lambda ) <- c( paste("mean", dimnames( as.matrix(x) )[[ 2L ]], sep="."),
+                               paste("dispersion", dimnames( as.matrix(z) )[[ 2L ]], sep=".") )
+      lambda
   }
   ans$npar <- function(x, z) ifelse( !is.null(z), NCOL(x)+NCOL(z), NCOL(x)+1 )
   ans$dp <- function(y, x, z, offset, lambda) {
-    nb <- length(lambda)
-    mu <- fm$linkinv( x %*% lambda[ 1:NCOL(x) ] + offset$mean )
-    if( is.null(z) )
-      size <- 1 / lambda[ nb ]
-    else
-      size <- 1 / exp( z %*% lambda[ ( NCOL(x)+1 ):nb ] + offset$precision )
-    cbind( dnbinom( y, mu=mu, size=size) , pnbinom( y, mu=mu, size=size) )
+      nb <- length(lambda)
+      mu <- fm$linkinv( x %*% lambda[ 1:NCOL(x) ] + offset$mean )
+      if( is.null(z) )
+          size <- 1 / lambda[ nb ]
+      else
+          size <- 1 / exp( z %*% lambda[ ( NCOL(x)+1 ):nb ] + offset$precision )
+      cbind( dnbinom( y, mu=mu, size=size) , pnbinom( y, mu=mu, size=size) )
   }
   ans$q <- function(p, x, z, offset, lambda) {
-    nb <- length(lambda)
-    mu <- fm$linkinv( x %*% lambda[ 1:NCOL(x) ] + offset$mean )
-    if( is.null(z) )
-      size <- 1 / lambda[ nb ]
-    else
-      size <- 1 / exp( z %*% lambda[ ( NCOL(x)+1 ):nb ] + offset$precision )
-    qnbinom( p, mu=mu, size=size)
+      nb <- length(lambda)
+      mu <- fm$linkinv( x %*% lambda[ 1:NCOL(x) ] + offset$mean )
+      if( is.null(z) )
+          size <- 1 / lambda[ nb ]
+      else
+          size <- 1 / exp( z %*% lambda[ ( NCOL(x)+1 ):nb ] + offset$precision )
+      qnbinom( p, mu=mu, size=size)
+  }
+  ans$fitted.val <- function(x, z, offset, lambda){
+      fm$linkinv( x %*% lambda[ 1:NCOL(x) ] + offset$mean )
   }
   ans$type <- "integer"
   class(ans) <- c( "marginal.gcmr")
@@ -212,6 +224,9 @@ weibull.marg <- function(link = "log"){
         shape <- exp( z %*% lambda[ ( NCOL(x)+1 ):nb ] + offset$precision )
       qweibull(p, shape=shape, scale=scale)
     }
+    ans$fitted.val <- function(x, z, offset, lambda){
+      fm$linkinv( x %*% lambda[ 1:NCOL(x) ] + offset$mean )
+  }
     ans$type <- "numeric"
     class(ans) <- c( "marginal.gcmr")
     ans
@@ -260,6 +275,9 @@ Gamma.marg <- function(link = "inverse"){
       shape <- exp( z %*% lambda[ ( NCOL(x)+1 ):nb ] + offset$precision )
     qgamma(p, shape=shape, rate=shape/mu)
   }
+  ans$fitted.val <- function(x, z, offset, lambda){
+      fm$linkinv( x %*% lambda[ 1:NCOL(x) ] + offset$mean )
+  }
   ans$type <- "numeric"
   class(ans) <- c( "marginal.gcmr")
   ans
@@ -267,15 +285,19 @@ Gamma.marg <- function(link = "inverse"){
 
 # beta
 beta.marg <- function(link = "logit"){
-  fm <- binomial( substitute( link ) ) # ;-)
-  ans <- list()
-  ans$start <- function(y, x, z, offset) {
-    if( !is.null(z) )
-      offset <- list( as.vector(offset$mean), as.vector(offset$precision) )   
-    m <- betareg.fit(x=x, y=as.vector(y), z=z, offset=offset, link=link ) 
-    lambda <- unlist( coef(m) )
-    if( is.null(z) )
-      attr(lambda, "lower") <- c( rep( -Inf, NCOL(x) ), sqrt(.Machine$double.eps) )
+    fm <- binomial( substitute( link ) ) # ;-)
+    ans <- list()
+    ans$start <- function(y, x, z, offset) {
+        if( !is.null(z) )
+            offset <- list( as.vector(offset$mean), as.vector(offset$precision) )   
+        m <- betareg.fit(x=x, y=as.vector(y), z=z, offset=offset, link=link ) 
+        lambda <- unlist( coef(m) )
+        if( is.null(z) ){
+            pos <- NCOL(x)+1
+            lambda[pos] <- exp( lambda[pos] )
+            names(lambda)[pos] <- "dispersion"
+            attr(lambda, "lower") <- c( rep( -Inf, NCOL(x) ), sqrt(.Machine$double.eps) )
+        }
     lambda
   }
   ans$npar <- function(x, z) ifelse(!is.null(z), NCOL(x)+NCOL(z), NCOL(x)+1)
@@ -300,6 +322,9 @@ beta.marg <- function(link = "logit"){
     shape1 <- phi*mu
     shape2 <- phi*(1-mu)
     qbeta(p, shape1, shape2)
+  }
+  ans$fitted.val <- function(x, z, offset, lambda){
+      fm$linkinv( x %*% lambda[ 1:NCOL(x) ] + offset$mean )
   }
   ans$type <- "numeric"
   class(ans) <- c("marginal.gcmr")

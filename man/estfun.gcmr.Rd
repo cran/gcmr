@@ -2,10 +2,10 @@
 \alias{estfun.gcmr}
 \alias{bread.gcmr}
 \title{
-Bread and Salami for Sandwich Variance Estimation in Gaussian Marginal Regression Models
+Components for Sandwich Variance Estimation in Gaussian Marginal Regression Models
 }
 \description{
-Extracts empirical estimating functions (salami) and the inverse of (minus) the Hessian (bread) of a fitted Gaussian marginal regression model for computation of the sandwich variance-covariance matrix (Zeileis, 2006). 
+Extracts components for computation of the sandwich variance-covariance matrix  (Zeileis, 2004; 2006). 
 }
 \usage{
 \method{estfun}{gcmr}(x, ...)
@@ -21,14 +21,16 @@ further arguments passed to methods.
 }
 }
 \details{
-These functions are passed to \code{\link{sandwich}} (Zeileis, 2006).
+These functions are passed to \code{\link{sandwich}} (Zeileis, 2004; 2006).
 }
 \value{
 \code{estfun}: a matrix containing the empirical estimating functions. 
 
-\code{bread}: a matrix containing the inverse of (minus) the Hessian. 
+\code{bread}: a matrix containing the `bread' of the sandwich estimator. 
 }
 \references{
+Zeileis, A. (2004). Econometric computing with HC and HAC covariance matrix estimators. \emph{Journal of Statistical Software} \bold{11}, issue 10.
+
 Zeileis, A. (2006). Object-oriented computation of sandwich estimators. \emph{Journal of Statistical Software} \bold{16}, issue 9.
 }
 \author{

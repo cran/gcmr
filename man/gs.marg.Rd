@@ -11,7 +11,7 @@
 \alias{ps.marg}
 \alias{nb.marg}
 \title{
-Sets the Marginals in Gaussian Copula Marginal Regression Models 
+Marginals in Gaussian Copula Marginal Regression Models 
 }
 \description{
 These functions set the marginals in Gaussian copula marginal regression models.

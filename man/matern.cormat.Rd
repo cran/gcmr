@@ -1,7 +1,7 @@
 \name{matern.cormat}
 \alias{matern.cormat}
 \title{
-Gaussian Copula Regression with Matern Spatial Correlation Matrix
+Matern Spatial Correlation
 }
 \description{
 Sets a Matern spatial correlation matrix in Gaussian copula marginal regression models.
@@ -14,7 +14,7 @@ matern.cormat(D, alpha = 0.5)
 matrix with values of the distances between pairs of data locations.
 }
   \item{alpha}{
-value of the smoothness parameter of the Matern correlation class.
+value of the smoothing parameter of the Matern correlation class.
 }
 }
 \value{

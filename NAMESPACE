@@ -1,5 +1,11 @@
 useDynLib(gcmr, .registration=TRUE)
-importFrom(sandwich, estfun, bread)
+import("Formula")
+importFrom("sandwich", estfun, bread, vcovHAC)
+importFrom("nlme", fdHess)
+importFrom("car", qqPlot)
+importFrom("geoR", matern)
+importFrom("betareg", betareg.fit)
+importFrom("sp", spDists)
 export(gaussian.marg, poisson.marg, binomial.marg, beta.marg,
        negbin.marg, Gamma.marg, weibull.marg,
        gs.marg, ps.marg, bn.marg, nb.marg, 
@@ -14,7 +20,7 @@ S3method("profile", "gcmr")
 S3method("residuals", "gcmr")
 S3method("summary", "gcmr")
 S3method("vcov", "gcmr")
-
-
+S3method("plot", "gcmr")
+S3method("print", "summary.gcmr")
 
 
