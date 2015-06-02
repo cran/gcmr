@@ -5,12 +5,12 @@
 Gaussian Copula Marginal Regression
 }
 \description{
- Fits Gaussian copula marginal regression models described by Song (2000) and Masarotto and Varin (2012). 
+ Fits Gaussian copula marginal regression models described in Song (2000) and Masarotto and Varin (2012). 
 }
 \details{
-Gaussian copula regression models (Song, 2000; Pitt, 2006; Masarotto and Varin, 2012) provide a mathematically convenient framework to account for dependence in regression analysis. Gaussian copulas allow to combine the simplicity of interpretation of marginal regression with the flexibility in the specification of the dependence structure of multivariate normal models. 
+Gaussian copula models are frequently used to extend univariate regression models to the multivariate case. The principal merit of the approach is that the specification of the regression model is conveniently separated from the dependence structure described in the familiar form of the correlation matrix of a multivariate Gaussian distribution (Song 2000). This form of flexibility has been successfully employed in several complex applications including longitudinal data analysis, spatial statistics, genetics and time series. Some useful references can be found in Masarotto and Varin (2012), Song et al. (2013) and Nikoloulopoulos (2015). 
 
-This package contains \R functions related to the papers Masarotto and Varin (2012) and Guolo and Varin (2014). The main function is \code{\link{gcmr}}, which fits Gaussian copula marginal regression models. Inference is performed through a likelihood approach. Computation of the exact likelihood is possible only for continuous responses, otherwise the likelihood function is approximated by importance sampling. See Masarotto and Varin (2012) for details.
+This package contains \R functions that implement the methodology discussed in Masarotto and Varin (2012) and Guolo and Varin (2014). The main function is \code{\link{gcmr}}, which fits Gaussian copula marginal regression models. Inference is performed through a likelihood approach. Computation of the exact likelihood is possible only for continuous responses, otherwise the likelihood function is approximated by importance sampling. See Masarotto and Varin (2012) for details.
 
 }
 \author{
@@ -21,8 +21,10 @@ Guolo, A. and Varin, C. (2014). Beta regression for time series analysis of boun
 
 Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
 
-Pitt, M., Chan D. and Kohn, R. (2006). Efficient Bayesian inference for Gaussian copula regression models. \emph{Biometrika} \bold{93}, 537--554.
+Nikoloulopoulos A (2015). Efficient Estimation of High-dimensional Multivariate Normal Copula Models with Discrete Spatial Responses. \emph{Stochastic Environmental Research and Risk Assessment}, to appear.
 
 Song, P. X.-K. (2000). Multivariate dispersion models generated from Gaussian copula. \emph{Scandinavian Journal of Statistics} \bold{27}, 305--320.
+
+Song, P. X.-K., Li, M. and Zhang, P. (2013). Copulae in Mathematical and Quantitative Finance. In \emph{Vector Generalized Linear Models: A Gaussian Copula Approach}, 251--276. Springer Berlin Heidelberg.
 }
 \keyword{package}

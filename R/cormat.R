@@ -13,7 +13,7 @@ ind.cormat <- function() {
     ans$independent <- TRUE
     ans$start <- function() double(0)
     ans$chol <- function(tau , not.na) diag(rep(1,sum(not.na)))
-    class( ans ) <- "cormat.gcmr"
+    class( ans ) <- c("ind.gcmr", "cormat.gcmr")
     ans
 }
 
@@ -40,7 +40,7 @@ arma.cormat <- function( p=0 , q=0 ) {
         r <- seq(1,n)[not.na]
         chol(outer( r , r , function(i,j) rho[1+abs(i-j)] ))
     }
-    class( ans ) <- "cormat.gcmr"
+    class( ans ) <- c("arma.gcmr", "cormat.gcmr")
     ans
 }
 
@@ -84,7 +84,7 @@ cluster.cormat <- function(id, type=c("independence", "ar1", "ma1",
         q <- try(lapply(ng,function(i) chol(q[[i]][g[[i]],g[[i]]])),silent=TRUE)
         if (inherits(q,"try-error") ) NULL else q
     }
-    class( ans ) <- "cormat.gcmr"
+    class( ans ) <- c("cluster.gcmr", "cormat.gcmr")
     ans
 }
 
@@ -104,6 +104,6 @@ matern.cormat <- function(D, alpha=0.5) {
         q <- try(chol(S[not.na,not.na]),silent=TRUE)
         if( inherits(q,"try-error") ) NULL else q
     }
-    class( ans ) <- "cormat.gcmr"
+    class( ans ) <- c("matern.gcmr", "cormat.gcmr")
     ans
 }

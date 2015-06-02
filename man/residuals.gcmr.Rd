@@ -16,7 +16,7 @@
 \item{...}{further arguments passed to or from other methods.}
 }
 \description{
-  Computes various type of quantile residuals for validation of a fitted Gaussian copula marginal regression model described in Masarotto and Varin (2012).
+  Computes various type of quantile residuals for validation of a fitted Gaussian copula marginal regression model, as described in Masarotto and Varin (2012).
 }
 \details{
  Quantile residuals are defined in Dunn and Smyth (1996). Two different types are available:
@@ -24,7 +24,7 @@
 \code{conditional} \tab quantile residuals that account for the dependence. \cr
 \code{marginal} \tab quantile residuals that do not account for the dependence.
 }
-Conditional quantile residuals are normal quantiles of Rosenblatt (1952) transformations and they are appropriate for validation of the marginal regression models discussed by Masarotto and Varin (2012). If the responses are discrete, then the conditional quantile residuals are not well defined. This difficulty is overcame by randomized quantile residuals available through option \code{method="random"}. Alternatively, Zucchini and MacDonald (2009) suggest the use of mid interval quantile residuals (\code{method="mid"}). 
+Conditional quantile residuals are normal quantiles of Rosenblatt (1952) transformations and they are appropriate for validation of the marginal regression models discussed in Masarotto and Varin (2012). If the responses are discrete, then the conditional quantile residuals are not well defined. This difficulty is overcame by randomized quantile residuals available through option \code{method="random"}. Alternatively, Zucchini and MacDonald (2009) suggest the use of mid interval quantile residuals (\code{method="mid"}). 
 }
 \seealso{
   \code{\link{gcmr}}
@@ -50,6 +50,7 @@ See Masarotto and Varin (2012) for more details.
 }
 \examples{
 ## spatial binomial data
+\dontrun{
 data(malaria)
 D <- sp::spDists(cbind(malaria$x, malaria$y))/1000
 m <- gcmr(cbind(cases, size-cases) ~ netuse+I(green/100)+phc, data=malaria, 
@@ -60,6 +61,7 @@ qqnorm(res)
 qqline(res)
 ## or better via plot.gcmr
 plot(m, which = 3)
+}
 }
 \keyword{models}
 \keyword{regression}

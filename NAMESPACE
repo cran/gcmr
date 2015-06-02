@@ -1,26 +1,39 @@
 useDynLib(gcmr, .registration=TRUE)
 import("Formula")
-importFrom("sandwich", estfun, bread, vcovHAC)
-importFrom("nlme", fdHess)
-importFrom("car", qqPlot)
-importFrom("geoR", matern)
-importFrom("betareg", betareg.fit)
-importFrom("sp", spDists)
+
+importFrom("nlme", "fdHess")
+importFrom("car", "qqPlot")
+importFrom("geoR", "matern")
+importFrom("betareg", "betareg.fit")
+importFrom("sandwich", "estfun")
+importFrom("sandwich", "bread")
+importFrom("lmtest", "coeftest")
+importFrom("lmtest", "coeftest.default")
+importFrom("sp", "spDists")
+
 export(gaussian.marg, poisson.marg, binomial.marg, beta.marg,
        negbin.marg, Gamma.marg, weibull.marg,
        gs.marg, ps.marg, bn.marg, nb.marg, 
        ind.cormat, arma.cormat, cluster.cormat, matern.cormat,
-       gcmr, gcmr.fit, gcmr.options, se)
+       gcmr, gcmr.fit, gcmr.options)
+
 S3method("bread", "gcmr")
 S3method("coef", "gcmr")
+S3method("coeftest", "gcmr")
 S3method("estfun", "gcmr")
 S3method("logLik", "gcmr")
+S3method("model.frame", "gcmr")
+S3method("model.matrix", "gcmr")
+S3method("plot", "gcmr")
 S3method("print", "gcmr")
+S3method("print", "summary.gcmr")
 S3method("profile", "gcmr")
 S3method("residuals", "gcmr")
 S3method("summary", "gcmr")
+S3method("terms", "gcmr")
+S3method("update", "gcmr")
 S3method("vcov", "gcmr")
-S3method("plot", "gcmr")
-S3method("print", "summary.gcmr")
+
+
 
 

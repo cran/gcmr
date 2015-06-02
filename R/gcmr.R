@@ -68,10 +68,7 @@ truefit <- function(x) {
     for ( i in 1:length(nrep) ) {
       log.lik <- llik(x,nrep[i],big)
       if( length( theta[ifree] ) > 0 ){
-        if( i!=length(nrep) ) 
           ans <- suppressWarnings( x$options$opt(theta[ifree] , log.lik , low, up) )
-        else
-          ans <- suppressWarnings( x$options$opt( theta[ifree] , log.lik , low, up) )
         theta[ifree] <- ans$estimate
       }
     }
@@ -147,87 +144,97 @@ gcmr.opt <- function(start, loglik, lower, upper) {
 }
 
 gcmr.options <- function(seed=round(runif(1,1,100000)), nrep=c(100,1000),
-                         no.se=FALSE, method=c("BFGS", "Nelder-Mead", "CG")) {
+                         no.se=FALSE, method=c("BFGS", "Nelder-Mead", "CG"), ...) {
 
     method <- match.arg(method)
+    control <- list(...)
     opt <- function(start, loglik, lower, upper) {
         fn.opt <- function(x){
             if( any(x <= lower || x >= upper) ) NA
             else  -sum(loglik(x))
         }
-        ans <- optim(start, fn.opt, method=method)
+        ans <- optim(start, fn.opt, method=method, control=control)
         if(ans$convergence) warning(paste("optim exits with code",ans$convergence))
     list(estimate=ans$par,maximum=ans$value,convergence=ans$convergence)
     }
     list(seed=seed,nrep=nrep,no.se=no.se,opt=opt,method=method)
 }
 
-gcmr <- function(formula, data, subset, offset, contrasts=NULL, marginal, cormat,
-                 start, fixed, options=gcmr.options()){
-  call <- match.call()
-  mf <- match.call(expand.dots = FALSE)
-  if( !missing(data) ) {
-    subset <- eval(mf$subset, data)  
-    marginal <- eval(call$marginal,data,parent.frame()) 
-    cormat <- eval(call$cormat,data[subset,],parent.frame()) 
-  }
-  if( is.function( marginal ) )
-    marginal <- marginal()
-  if ( !inherits( marginal , "marginal.gcmr" ) ) stop("Unknown marginal")
-  if( is.function( cormat ) )
-    cormat <- cormat()
-  if ( !inherits( cormat , "cormat.gcmr" ) ) stop("Unknown cormat")
-  if (missing(data)) 
-      data <- environment(formula)
-  m <- match(c("formula", "data", "subset", "offset"), names(mf), 0L)
-  mf <- mf[c(1L, m)]
-  mf$drop.unused.levels <- TRUE
-  mf$na.action <- na.pass
-  ## next lines partially "inherited" from betareg
-  oformula <- as.formula(formula)
-  formula <- as.Formula(formula)
-  if (length(formula)[2L] < 2L)
-    simple.formula <- TRUE
-  else{
-    simple.formula <- FALSE
-    if (length(formula)[2L] > 2L) {
-      formula <- Formula(formula(formula, rhs = 1:2))
-      warning("formula must not have more than two RHS parts")
+gcmr <- function(formula, data, subset, offset, marginal, cormat,
+                 start, fixed, options=gcmr.options(...), model=TRUE, ...){
+
+    cl <- match.call()
+    mf <- match.call(expand.dots = FALSE)
+    if (missing(data)) data <- environment(formula)
+    marginal <- eval(cl$marginal,data,parent.frame()) 
+    cormat <- eval(cl$cormat,if (missing(subset)) data else data[eval(mf$subset,data),], parent.frame()) 
+    if (is.function(marginal))
+        marginal <- marginal()
+    if (!inherits(marginal, "marginal.gcmr")) stop("Unknown marginal")
+    if (is.function(cormat))
+        cormat <- cormat()
+    if (!inherits(cormat, "cormat.gcmr")) stop("Unknown cormat")
+    m <- match(c("formula", "data", "subset", "offset"), names(mf), 0L)
+    mf <- mf[c(1L, m)]
+    mf$drop.unused.levels <- TRUE
+    mf$na.action <- na.pass
+    ############################################################
+    ## Next lines "inherited" from betareg (Cribari-Neto and Zeleis, 2010, JSS)
+    ## with minor modifications needed for gcmr
+    ## For complete reference to betareg see citation("betareg")
+    ############################################################
+    oformula <- as.formula(formula)
+    formula <- as.Formula(formula)
+    if(length(formula)[2L] < 2L) {
+        formula <- as.Formula(formula(formula), ~ 1)
+        simple_formula <- TRUE
+    } else {
+        if(length(formula)[2L] > 2L) {
+            formula <- Formula(formula(formula, rhs = 1:2))
+            warning("formula must not have more than two RHS parts")
+        }
+        simple_formula <- FALSE
     }
-  }
-  mf$formula <- formula
-  mf[[1L]] <- as.name("model.frame")
-  mf <- eval(mf, parent.frame())
-  mt <- terms(formula, data = data)
-  mtX <- terms(formula, data = data, rhs = 1L)
-  if(!simple.formula)
+    mf$formula <- formula
+    
+    mf[[1L]] <- as.name("model.frame")
+    mf <- eval(mf, parent.frame())
+    
+    mt <- terms(formula, data = data)
+    mtX <- terms(formula, data = data, rhs = 1L)
     mtZ <- delete.response(terms(formula, data = data, rhs = 2L))
-  Y <- model.response(mf, "any")
-  if (length(dim(Y)) == 1L) {
-    nm <- rownames(Y)
-    dim(Y) <- NULL
-    if (!is.null(nm))
-      names(Y) <- nm
-  }
-  X <- model.matrix(mtX, mf, contrasts)
-  Z <- if(!simple.formula)
-    model.matrix(mtZ, mf, contrasts)
-  expand_offset <- function(offset) {
-    if (is.null(offset)) offset <- 0
-    if (length(offset) == 1)
-      offset <- rep.int(offset, NROW(Y))
-    as.vector(offset)
-  }
-  offsetX <- expand_offset(model.offset(model.part(formula, data = mf, rhs = 1L, terms = TRUE)))
-  offsetZ <- if(!simple.formula)
-    expand_offset(model.offset(model.part(formula, data = mf, rhs = 2L, terms = TRUE)))
-  if (!is.null(call$offset))
-    offsetX <- offsetX + expand_offset(mf[, "(offset)"])
-  offset <- list(mean = offsetX, precision = offsetZ)
-  
-  fit <- gcmr.fit(X, Y, Z, offset, marginal, cormat, start, fixed, options)
-  fit$call <- call
-  fit
+    Y <- model.response(mf, "any")
+    ## as in glm
+    if (length(dim(Y)) == 1L) {
+        nm <- rownames(Y)
+        dim(Y) <- NULL
+        if (!is.null(nm))
+            names(Y) <- nm
+    }
+    X <- model.matrix(mtX, mf)
+    Z <- model.matrix(mtZ, mf)
+
+    expand_offset <- function(offset) {
+        if (is.null(offset)) offset <- 0
+        if (length(offset) == 1) offset <- rep.int(offset, NROW(Y))
+        as.vector(offset)
+    }
+    offsetX <- expand_offset(model.offset(model.part(formula, data = mf, rhs = 1L, terms = TRUE)))
+    offsetZ <- expand_offset(model.offset(model.part(formula, data = mf, rhs = 2L, terms = TRUE)))
+    if (!is.null(cl$offset)) offsetX <- offsetX + expand_offset(mf[, "(offset)"])
+    offset <- list(mean = offsetX, precision = offsetZ)
+    
+    fit <- gcmr.fit(X, Y, if(!simple_formula) Z, offset, marginal, cormat, start, fixed, options)
+    
+    fit$call <- cl
+    fit$formula <- oformula
+    fit$terms <- list(mean = mtX, precision = mtZ, full = mt)
+    fit$levels <- list(mean = .getXlevels(mtX, mf), precision = .getXlevels(mtZ, mf), full = .getXlevels(mt, mf))
+    fit$contrasts <- list(mean = attr(X, "contrasts"), precision = attr(Z, "contrasts"))
+    if(model) fit$model <- mf
+
+    class(fit) <- "gcmr"
+    return(fit)
 }
 
 gcmr.fit <- function(x=rep(1,NROW(y)), y, z=NULL, offset=NULL, marginal, cormat, start, fixed, options=gcmr.options()) {
@@ -291,13 +298,15 @@ gcmr.fit <- function(x=rep(1,NROW(y)), y, z=NULL, offset=NULL, marginal, cormat,
   m$options <- options
   ## compute estimate
   m <- truefit(m)
-  m$fitted.values <- marginal$fitted.val(x=m$x[not.na,,drop=FALSE],
-                                         z=m$z[not.na,,drop=FALSE],
-                                         offset=list(mean = m$offset$mean[not.na,],
-                                             precision = m$offset$precision[not.na,]),
-                                         lambda=m$estimate[1:NCOL(x)])
+  fv <- marginal$fitted.val(x=m$x[not.na,,drop=FALSE],
+                            z=m$z[not.na,,drop=FALSE],
+                            offset=list(mean = m$offset$mean[not.na,],
+                                precision = m$offset$precision[not.na,]),
+                            lambda=m$estimate[1:NCOL(x)])
+  m$fitted.values <- rep(NA, NROW(y))
+  m$fitted.values[not.na] <- fv
   ## and s.e. and return
-  if ( m$options$no.se ) m else jhess(m)
+  if (m$options$no.se) m else jhess(m)
 }
 
 coef.gcmr <- function(object,...) object$estimate
@@ -309,6 +318,43 @@ logLik.gcmr <- function(object,...) {
     ans
 }
 
+terms.gcmr <- function(x, model = c("mean", "precision"), ...) {
+  x$terms[[match.arg(model)]]
+}
+
+model.frame.gcmr <- function(formula, ...) {
+  if(!is.null(formula$model)) return(formula$model)
+  if(is.Formula(formula$formula)) formula$call$formula <- formula$formula <-
+    formula(formula$formula, collapse = TRUE)
+  formula$terms <- formula$terms$full
+  NextMethod()
+}
+
+## almost as in betareg
+model.matrix.gcmr <- function(object, model = c("mean", "precision"), ...) {
+    model <- match.arg(model)
+    model.matrix(object$terms[[model]], model.frame(object), contrasts = object$contrasts[[model]])
+}
+
+## exactly as in betareg
+update.gcmr <- function (object, formula., ..., evaluate = TRUE)
+{
+  call <- object$call
+  if(is.null(call)) stop("need an object with call component")
+  extras <- match.call(expand.dots = FALSE)$...
+  if(!missing(formula.)) call$formula <- formula(update(Formula(formula(object)), formula.))
+  if(length(extras)) {
+    existing <- !is.na(match(names(extras), names(call)))
+    for (a in names(extras)[existing]) call[[a]] <- extras[[a]]
+    if(any(!existing)) {
+      call <- c(as.list(call), extras[!existing])
+      call <- as.call(call)
+    }
+  }
+  if(evaluate) eval(call, parent.frame())
+  else call
+}
+
 pinv <- function(h,tol) {
     h <- svd(h)
     idx <- h$d > sqrt(.Machine$double.eps)*h$d[1]
@@ -317,40 +363,26 @@ pinv <- function(h,tol) {
     ans
 }
 
-estfun.gcmr <- function(x,...) x$jac
+estfun.gcmr <- function(x, ...) {
+    if (is.null(x$cormat$id)) x$jac
+    else t(sapply(split(1:x$n, x$cormat$id[x$not.na]), function(i) colMeans(x$jac[i,])))
+}
+
 bread.gcmr <- function(x,...) pinv(x$hessian)*x$n
 
-vcov.gcmr <- function(object, type=c("hessian","sandwich","vscore","cluster","hac"),...) {
+coeftest.gcmr <- function(x, vcov. = NULL, df = Inf, ...)
+    coeftest.default(x, vcov. = vcov., df = df, ...)
+
+vcov.gcmr <- function(object, ...) {
     if ( !inherits( object , "gcmr" ) ) stop("First argument must be a gcmr object")
-    type <- match.arg(type)
-    if (type=="sandwich") {
-        if (is.null(object$hessian) || is.null(object$jac)) object <- jhess(object)
-        h <- pinv(object$hessian)
-        v <- h %*% crossprod(object$jac) %*% h
-    } else if (type=="hessian")  {
-        if (is.null(object$hessian) || is.null(object$jac)) object <- jhess(object)
-        v <- pinv(object$hessian)
-    } else if (type=="vscore")  {
-        if (is.null(object$jac)) object <- jhess(object,only.jac=TRUE)
-        v <- pinv(crossprod(object$jac))
-    } else if (type=="cluster") {
-        if (is.null(object$hessian) || is.null(object$jac)) object <- jhess(object)
-        if (is.null(object$cormat$id)) stop("no cluster found")
-        h <- pinv(object$hessian)
-        v <- sapply(split(1:object$n,object$cormat$id[object$not.na]),function(i) colSums(object$jac[i,])) 
-        v <- h %*% (v %*% t(v) ) %*% h
-    } else {
-        if (is.null(object$hessian) || is.null(object$jac)) object <- jhess(object)
-        v <- sandwich::vcovHAC.default(object,...)
-    }
+    if (is.null(object$hessian) || is.null(object$jac)) object <- jhess(object)
+    v <- pinv(object$hessian)
     ans <- matrix(0,length(object$estimate),length(object$estimate))
     ifree <- is.na(object$fixed)
     ans[ifree,ifree] <- v
     colnames(ans) <- rownames(ans) <- names(object$estimate)
     ans
 }
-
-se <- function(x,...) sqrt(diag(vcov.gcmr(x,...)))
 
 print.gcmr <- function(x, digits = max(3, getOption("digits") - 3), ...)
 {
@@ -374,13 +406,14 @@ print.gcmr <- function(x, digits = max(3, getOption("digits") - 3), ...)
 }
 
 ## summary
-summary.gcmr <- function(object, type = "hessian", ...)
+summary.gcmr <- function(object, ...)
 {
 
     cf <- object$estimate
-    object$se.type <- match.arg(type, c("hessian", "sandwich", "vscore", "cluster", "hac"))
-    se <- se(object, type = object$se.type, ...)
+    se <- sqrt(diag(vcov(object)))
     cf <- cbind(cf, se, cf/se, 2 * pnorm(-abs(cf/se)))
+    ## set to NA se, z and p-value for parameters with fixed values
+    cf[which(!is.na(object$fixed)), -1] <- NA
     colnames(cf) <- c("Estimate", "Std. Error", "z value", "Pr(>|z|)")
     cf <- list(marginal = cf[seq.int(length.out = object$nbeta), , drop = FALSE], 
                copula = cf[seq.int(length.out = object$ngamma) +  object$nbeta, , drop = FALSE])
@@ -424,7 +457,7 @@ print.summary.gcmr <- function(x, digits = max(3, getOption("digits") - 3), ...)
 
 ## note: method=interval is hidden
 residuals.gcmr <- function (object, type=c("conditional","marginal"),
-                            method=c("random","mid"),...) {
+                            method=c("random","mid"), ...) {
     type <- match.arg(type)
     method <- match.arg(method)
     is.int <- object$marginal$type == "integer"
@@ -470,25 +503,16 @@ residuals.gcmr <- function (object, type=c("conditional","marginal"),
     ans
 }
 
-plotint <- function(r) {
-    r <- as.ts(r)
-    tm <- time(r)
-    plot(NA,NA,xlim=range(tm),xlab="",ylim=range(r),ylab="pseudo residuals")
-    for (i in 1:length(tm)) lines(c(tm[i],tm[i]),r[i,])
-}
 
 profile.gcmr <- function(fitted , which , low , up, npoints = 10 , display = TRUE , alpha = 0.05, progress.bar = TRUE, ... ) {
     if ( !inherits( fitted , "gcmr" ) ) stop("first argument must be a gcmr object")
-    if ( which > NCOL( fitted$x ) )
-      stop("profile likelihood is computed only for mean response parameters")
-    if(missing(low)){
-      this.se <- se(fitted)[which]
-      low <- coef(fitted)[which]-3*this.se
-    }
-    if(missing(up)){
-      this.se <- se(fitted)[which]
-      up <- coef(fitted)[which]+3*this.se
-    }
+    if ( !( which %in% fitted$ibeta ) )
+        stop("profile likelihood is computed only for mean or dispersion parameters")
+    if(missing(low) || missing(up)) se <- sqrt(diag(vcov(fitted)))
+    if(missing(low)) low <- coef(fitted)[which]-3*se[which]
+    if(missing(up)) up <- coef(fitted)[which]+3*se[which]
+    low <- max(low, fitted$lower[which])
+    up <- min(up, fitted$upper[which])
     points <- seq( low , up , length = npoints )
     ## progress bar... 
     pb <- txtProgressBar(min=0, max=npoints)  
@@ -509,14 +533,14 @@ profile.gcmr <- function(fitted , which , low , up, npoints = 10 , display = TRU
     if ( display ) {
         npoints <- seq( low , up , length = 200 )
         plot( npoints , splinefun( points, loglik )(npoints) , type = "l" ,
-             xlab = names(fitted$estimate)[which], ylab = "log-likelihood profile")
+             xlab = names(fitted$estimate)[which], ylab = "log-likelihood profile", ...)
         grid()
         abline( h = max(loglik) - qchisq( 1 - alpha , 1 )/2 , lty = "dashed" )
     }
     invisible(list(points=points,profile=loglik))
 }
 
-plot.gcmr <- function(x, which = if(!time.series) 1:4 else c(1, 3, 5, 6), caption = c("Residuals vs indices of obs.", "Residuals vs linear predictor", "Normal plot of residuals", "Predicted vs observed values", "Autocorrelation plot of residuals", "Partial ACF plot of residuals"), main = "", ask = prod(par("mfcol")) < length(which) && dev.interactive(), level = 0.95, col.lines = "gray", time.series = FALSE, ...){
+plot.gcmr <- function(x, which = if(!time.series) 1:4 else c(1, 3, 5, 6), caption = c("Residuals vs indices of obs.", "Residuals vs linear predictor", "Normal plot of residuals", "Predicted vs observed values", "Autocorrelation plot of residuals", "Partial ACF plot of residuals"), main = "", ask = prod(par("mfcol")) < length(which) && dev.interactive(), level = 0.95, col.lines = "gray", time.series = inherits(x$cormat, "arma.gcmr"), ...){
 
     if (!inherits(x, "gcmr")) 
         stop("use only with \"gcmr\" objects")
@@ -529,120 +553,37 @@ plot.gcmr <- function(x, which = if(!time.series) 1:4 else c(1, 3, 5, 6), captio
     Main <- rep("", 6)
     Main[which] <- rep(main, length.out = sum(show))
     one.fig <- prod(par("mfcol")) == 1
-    if (ask) {
-        op <- par(ask = TRUE)
-        on.exit(par(op))
-    }
+    op <- par(ask = ask, ...)
+    on.exit(par(op))
     if (show[1]) {
-        plot(1:length(res), res, xlab = "Obs. number", ylab = "Quantile residual", main = Main[1], 
-            type = if(time.series) "l" else "p", ...)
-        abline(h = 0, lty = 2, col = col.lines, lwd = par()$lwd, ...)
+        plot(1:length(res), res, xlab = "Obs. number", ylab = "Quantile residual", main = Main[1], type = if(time.series) "l" else "p", ...)
+        abline(h = 0, col = col.lines, ...)
         mtext(caption[1], 3, 0.25)
     }
     if (show[2]) {
-        plot(fitted(x), res, xlab = "Linear predictor", 
-            ylab = "Quantile residual", main = Main[2], ...)
-        abline(h = 0, lty = 2, col = col.lines, lwd = par()$lwd, ...)
+        plot(fitted(x), res, xlab = "Linear predictor", ylab = "Quantile residual", main = Main[2], ...)
+        abline(h = 0, col = col.lines,...)
         mtext(caption[2], 3, 0.25)
     }
     if (show[3]) {
-        qqPlot(res, envelope = level, grid = FALSE, xlab = "Normal quantiles", ylab = "Sorted quantile residuals", main = Main[3], col.lines = col.lines, lwd = par()$lwd, ...)
+        qqPlot(res, envelope = level, grid = FALSE, xlab = "Normal quantiles", ylab = "Sorted quantile residuals", main = Main[3], col.lines = col.lines)
         mtext(caption[3], 3, 0.25)
     }
     if (show[4]) {
         Y <- if(NCOL(x$y)==1) x$y else x$y[,1]/(x$y[,1]+x$y[,2])
-        plot(Y, fitted.val, xlab = "Observed values", ylab = "Predicted values", 
-            main = Main[4], ...)
-        abline(0, 1, lty = 2, col = col.lines, lwd = par()$lwd, ...)
+        plot(Y, fitted.val, xlab = "Observed values", ylab = "Predicted values", main = Main[4], ...)
+        abline(0, 1, col = col.lines, ...)
         mtext(caption[4], 3, 0.25)
     }
     if (show[5]) {
-        plot( acf(res, na.action = na.omit, plot = FALSE), ci.col = col.lines, main = Main[5], ...)
+        plot( acf(res, na.action = na.pass, plot = FALSE), ci.col = col.lines, main = Main[5], ...)
         mtext(caption[5], 3, 0.25)
     }
     if (show[6]) {
-        plot( pacf(res, na.action = na.omit, plot = FALSE), ci.col = col.lines, main = Main[6], ...)
+        plot( pacf(res, na.action = na.pass, plot = FALSE), ci.col = col.lines, main = Main[6], ...)
         mtext(caption[6], 3, 0.25)
     }
     invisible()
 }
-
-hausman <- function(m, method=c("one-step","full"),
-                      nboot=if (method=="one-step") 1000 else 200,
-                      nrep=200) {
-    if ( !inherits( m , "gcmr" ) ) stop("first argument must be a gcmr object")
-    method <- match.arg(method)
-    m$options$nrep <- nrep
-    m$options$no.se <- TRUE
-    ## ind lik
-    mind <- gcmr.fit(x=m$x,y=m$y,z=m$z,offset=m$offset,marginal=m$marg,cormat=ind.cormat(),fixed=m$fixed[m$ibeta],options=m$options)
-    ## differences in the marginal parameters
-    betaml <- coef(m)[m$ibeta]
-    betaind <- mind$estimate
-    delta <- betaind - betaml
-    ## simulator
-    R <- m$cormat$chol( coef(m)[m$igamma] , m$not.na )
-    if (!is.list(R)) R <- list(R)
-    R <- lapply(R,t)
-    y <- m$y[m$not.na,]
-    x <- m$x[m$not.na,,drop=FALSE]
-    z <- m$z[m$not.na,,drop=FALSE]
-    offset <- list(mean = m$offset$mean[m$not.na,],
-                   precision = m$offset$precision[m$not.na,])
-    sim <- function() {
-        u <- pnorm(unlist(lapply(R, function(x) x %*% rnorm(NROW(x)))))
-        m$marginal$q(u,x,z,offset,betaml)
-    }
-    ## bootstrap estimate of the the variance of the difference
-    vdelta <- var(if (method=="one-step") dh1(m,mind,sim,nboot) else dhf(m,mind,sim,nboot))
-    ## return
-    stderr <- sqrt(diag(vdelta))
-    htab <- cbind(ml=betaml,ind.lik=betaind,diff=delta,s.e.=stderr,z=delta/stderr)
-    rownames(htab) <- names(betaml)
-    vdelta <- pinv(vdelta)
-    hall <- sum(delta*(vdelta%*%delta))
-    hall <- c(stat=hall,df=attr(vdelta,"df"),
-              p.value=pchisq(hall,attr(vdelta,"df"),lower.tail=FALSE))
-    list(overall=hall,parameters=htab,
-         options=c(method=method,nboot=nboot,nrep=nrep))    
-}
-
-dh1 <- function(m, mind, sim, nboot) {
-    mind$estimate <- coef(m)[m$ibeta]
-    nb <- Hind <- 0
-    sml <- matrix(0,nboot,length(coef(m))) 
-    sind <- matrix(0,nboot,length(coef(mind))) 
-    while ( nb < nboot ) {
-        nb <- nb+1
-        m$y[m$not.na,] <- mind$y[mind$not.na,] <- sim()
-        sml[nb,] <- colSums(jhess(m, only.jac=TRUE)$jac)
-        mind <- jhess(mind, only.jac=FALSE)
-        sind[nb,] <- colSums(mind$jac) 
-        Hind <- Hind + (mind$hessian-Hind)/nb
-    }
-    (sml%*%pinv(crossprod(sml/sqrt(nboot))))[,m$ibeta]-sind%*%pinv(Hind)
-}
-
-dhf <- function(m, mind, sim, nboot) {
-    theta <- m$estimate
-    m$options$opt <- mind$options$opt <- function(start,loglik, lower, upper) {
-        ans <- nlminb(start, function(x) -sum(loglik(x)),
-                      control=list(rel.tol=1e-4,iter.max=3*length(theta)),
-                      lower=lower, upper=upper)
-        list(estimate=ans$par,maximum=ans$objective)
-    }
-    d <- matrix(0,nboot,length(coef(mind)))
-    nb <- 0
-    while (nb < nboot) {
-        nb <- nb+1
-        m$y[m$not.na,] <- mind$y[mind$not.na,] <- sim()
-        m$estimate <- theta
-        m <- truefit(m)
-        mind$estimate <- mind$marginal$start(mind$y,mind$x,mind$z,mind$offset)
-        mind <- truefit(mind)
-        d[nb,] <- coef(m)[m$ibeta]-coef(mind)
-    }
-    d
-}
-
+ 
 

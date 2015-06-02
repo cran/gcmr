@@ -8,10 +8,10 @@ Fitting Gaussian Copula Marginal Regression Models by Maximum (Simulated) Likeli
 Fits Gaussian copula marginal regression models by maximum (simulated) likelihood.   
 }
 \usage{
-gcmr(formula, data, subset, offset, contrasts=NULL, 
-     marginal, cormat, start, fixed, options=gcmr.options())
+gcmr(formula, data, subset, offset, marginal,
+     cormat, start, fixed, options=gcmr.options(...), model=TRUE,...)
 
-gcmr.fit(x=rep(1,NROW(y)), y, z=NULL, offset=NULL, 
+gcmr.fit(x=rep(1,NROW(y)), y, z=NULL, offset=NULL,
 	 marginal, cormat, start, fixed, options=gcmr.options())		   
 }
 
@@ -33,17 +33,13 @@ an optional vector specifying a subset of observations to be used in the fitting
 optional numeric vector with an a priori known component to be included in the linear predictor for the mean. When appropriate, offset may also be a list of two offsets for the mean and precision equation, respectively.
 }
 
-\item{contrasts}{
-an optional list. See the \code{contrasts.arg} of \code{model.matrix.default}.
+\item{x}{design matrix.
 }
 
-\item{x}{design matrix of dimension \code{n * p}.
+\item{y}{vector of observations.
 }
 
-\item{y}{vector of observations of length \code{n}.
-}
-
-\item{z}{optional design matrix for the dispersion/shape of dimension \code{n * p}.
+\item{z}{optional design matrix for the dispersion/shape.
 }
 
 \item{marginal}{
@@ -65,6 +61,13 @@ optional numeric vector of the same length as the total number of parameters. If
 \item{options}{
 list of options passed to function \code{\link{gcmr.options}}.
 }
+\item{model}{
+logical. If \code{TRUE}, then the model frame is returned. 
+}
+
+\item{...}{
+arguments passed to \code{\link{gcmr.options}}.
+}
 }
 
 \details{
@@ -83,13 +86,6 @@ An object of class \code{"gcmr"} with the following components:
 \item{hessian}{(minus) the Hessian at the maximum likelihood estimate.}
 \item{jac}{the Jacobian at the maximum likelihood estimate.}
 \item{fitted.values}{the fitted values.}
-\item{y}{the y vector used.}
-\item{x}{the model matrix used for the mean response.}
-\item{z}{the (optional) model matrix used for the dispersion/shape.}
-\item{offset}{the offset used.}
-\item{n}{the number of observations.}
-\item{call}{the matched call.}
-\item{not.na}{the vector of binary indicators of missing observations.}
 \item{marginal}{the marginal model used.}
 \item{cormat}{the correlation matrix used.}
 \item{fixed}{the numeric vector indicating which parameters are constants.}
@@ -98,8 +94,21 @@ An object of class \code{"gcmr"} with the following components:
 \item{nbeta}{the number of marginal parameters.}
 \item{ngamma}{the number of dependence parameters.}
 \item{options}{the fitting options used, see \code{\link{gcmr.options}}.}
+\item{call}{the matched call.}
+\item{formula}{the model formula.}
+\item{terms}{the terms objects for the fitted model.}
+\item{levels}{the levels of the categorical regressors.}
+\item{model}{the model frame, returned only if \code{model=TRUE}.}
+\item{contrasts}{the contrasts corresponding to \code{levels}.}
+\item{y}{the y vector used.}
+\item{x}{the model matrix used for the mean response.}
+\item{z}{the (optional) model matrix used for the dispersion/shape.}
+\item{offset}{the offset used.}
+\item{n}{the number of observations.}
+\item{not.na}{the vector of binary indicators of the available observations (not missing).}
 
-Functions \code{\link{coefficients}}, \code{\link{logLik}}, \code{\link{fitted}}, \code{\link{vcov.gcmr}}, \code{\link{se}} and \code{\link{residuals.gcmr}} can be used to extract various useful features of the value returned by \code{\link{gcmr}}. Function \code{\link{plot.gcmr}} produces various diagnostic plots for fitted \code{gcmr} objects.
+
+Functions \code{\link{coefficients}}, \code{\link{logLik}}, \code{\link{fitted}}, \code{\link{vcov.gcmr}} and \code{\link{residuals.gcmr}} can be used to extract various useful features of the value returned by \code{\link{gcmr}}. Function \code{\link{plot.gcmr}} produces various diagnostic plots for fitted \code{gcmr} objects.
 }
 \references{
 Cribari-Neto, F. and Zeileis, A. (2010). Beta regression in R. \emph{Journal of Statistical Software} \bold{34}, 1--24. \url{http://www.jstatsoft.org/v34/i02/}.

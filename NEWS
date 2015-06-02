@@ -1,3 +1,14 @@
+Version 0.7.5
+-------------
+- vignette
+- improved plot method
+- vcov and summary re-designed
+- estfun works properly for clustered/longitudinal data  
+- bug in update formula fixed
+- improved profile method
+- documentation updated
+- method coeftest.gcmr 
+
 Version 0.7.0
 -------------
 - depends and imports rearranged to conform with CRAN policies

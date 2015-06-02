@@ -5,7 +5,7 @@
 Gambia Malaria Data
 }
 \description{
-Malaria prevalence in children in Gambia. The data are constructed from \code{gambia} data frame in \code{geoR} package (Diggle and Ribeiro, 2007) by village aggregation. 
+Malaria prevalence in children in Gambia. The data are constructed from the \code{gambia} dataframe in the \code{geoR} package (Diggle and Ribeiro, 2007) by village aggregation. 
 }
 \usage{data(malaria)}
 \format{
@@ -18,7 +18,7 @@ A data frame with the 65 observations with the following variables
 \code{age} \tab mean age of the sampled children in each village. \cr
 \code{netuse} \tab frequency of sampled children who regularly sleep under a bed-net in each village. \cr
 \code{treated} \tab frequency of sampled children whose bed-net is treated. \cr
-\code{green} \tab satellite-derived measure of the green-ness of vegetation in the immediate vicinity of the village (arbitrary units). \cr
+\code{green} \tab measure of vegetation green-ness in the immediate vicinity of the village. \cr
 \code{phc} \tab indicator variable denoting the presence (1) or absence (0) of a health center in the village. \cr
 \code{area} \tab indicator of the village area (Diggle et al., 2002).\cr
 }

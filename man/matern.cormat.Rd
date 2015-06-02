@@ -14,14 +14,14 @@ matern.cormat(D, alpha = 0.5)
 matrix with values of the distances between pairs of data locations.
 }
   \item{alpha}{
-value of the smoothing parameter of the Matern correlation class.
+value of the shape parameter of the Matern correlation class. The default {alpha = 0.5} corresponds to an exponential correlation model. 
 }
 }
 \value{
 An object of class \code{\link{cormat.gcmr}} representing a Matern correlation matrix.
 }
 \details{
-The Matern correlation function is inherited from the \code{geoR} package (Diggle and Ribeiro, 2007).
+The Mat\'ern correlation function is inherited from the \code{geoR} package (Diggle and Ribeiro, 2007).
 }
 \references{
 Diggle, P. and Ribeiro, P.J. (2007). \emph{Model-based Geostatistics}. Springer.

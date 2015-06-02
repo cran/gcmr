@@ -4,11 +4,11 @@
 Setting Options for Fitting Gaussian Copula Marginal Regression Models
 }
 \description{
-Sets options which affect fitting of Gaussian copula marginal regression models.
+Sets options that affect the fitting of Gaussian copula marginal regression models.
 }
 \usage{
 gcmr.options(seed = round(runif(1, 1, 1e+05)), nrep = c(100, 1000), 
-    no.se = FALSE, method = c("BFGS", "Nelder-Mead", "CG")) 
+    no.se = FALSE, method = c("BFGS", "Nelder-Mead", "CG"), ...) 
 }
 \arguments{
   \item{seed}{
@@ -22,6 +22,9 @@ logical. Should standard errors be computed and returned or not?
 }
   \item{method}{
    a character string specifying the method argument passed to \code{optim}. The default optimization routine is the quasi-Newton algorithm \code{BFGS}. See \code{\link{optim}} for details. 
+}
+\item{...}{
+arguments passed to \code{\link{optim}}.
 }
 }
 \value{

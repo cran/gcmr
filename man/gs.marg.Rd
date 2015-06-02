@@ -14,17 +14,7 @@
 Marginals in Gaussian Copula Marginal Regression Models 
 }
 \description{
-These functions set the marginals in Gaussian copula marginal regression models.
-
-At the moment, the following are implemented:\tabular{ll}{ 
-\code{beta.marg} \tab beta marginals.\cr
-\code{binomial.marg} \tab binomial marginals.\cr
-\code{Gamma.marg} \tab Gamma marginals. \cr
-\code{gaussian.marg} \tab Gaussian marginals. \cr 
-\code{negbin.marg} \tab negative binomial marginals. \cr
-\code{poisson.marg} \tab Poisson marginals. \cr 
-\code{weibull.marg} \tab Weibull marginals. \cr
-}
+These functions set the marginals in Gaussian copula marginal regression models. 
 }
 \usage{
 beta.marg(link = "logit")
@@ -44,7 +34,7 @@ a specification for the model link function. See \code{\link{family}} for the sp
 \details{
 Beta marginals specified by \code{beta.marg} are parametrized in terms of mean and dispersion as in \code{\link{betareg}}. See Cribari-Neto and Zeileis (2010) and Ferrari and Cribari-Neto (2004). 
 
-For binomial marginals specified by \code{binomial.marg} the response is specified as a factor when the first level denotes failure and all others success or as a two-column matrix with the columns giving the numbers of successes and failures.
+For binomial marginals specified by \code{binomial.marg}, the response is specified as a factor when the first level denotes failure and all others success or as a two-column matrix with the columns giving the numbers of successes and failures.
 
 Negative binomial marginals implemented in \code{negbin.marg} are parametrized such that \eqn{var(Y)=E(Y)+k E(Y)^2}. 
 

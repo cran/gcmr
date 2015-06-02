@@ -15,7 +15,7 @@ Computes the profile log-likelihood for mean response parameters of a Gaussian c
 a fitted Gaussian copula marginal regression model of class \code{\link{gcmr}}.
 }
   \item{which}{
-the index of the mean response parameter which should be profiled. 
+the index of the regression parameter which should be profiled. 
 }
   \item{low}{
 the lower limit used in computation of the profile log-likelihood. If this is \code{missing}, then the lower limit is set equal to the estimate minus three times its standard error.
@@ -36,11 +36,11 @@ the significance level, default is \code{0.05}.
 logical. If TRUE, a text progress bar is displayed. 
 }
 \item{...}{
-further arguments. 
+further arguments passed to \code{plot}.
 }
 }
 \details{
-If display requested, then the profile log-likelihood is smoothed by cubic spline interpolation. 
+If the display is requested, then the profile log-likelihood is smoothed by cubic spline interpolation. 
 }
 \value{
 A list with the following components:
@@ -59,7 +59,7 @@ Guido Masarotto and Cristiano Varin.
 \examples{
 ## spatial binomial data
 \dontrun{
-data( malaria )
+data(malaria)
 D <- sp::spDists(cbind(malaria$x, malaria$y))/1000
 m <- gcmr(cbind(cases, size-cases) ~ netuse+I(green/100)+phc, data=malaria,
 marginal=binomial.marg, cormat=matern.cormat(D), options=gcmr.options(seed=987))
