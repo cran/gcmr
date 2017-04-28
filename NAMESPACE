@@ -1,6 +1,11 @@
 useDynLib(gcmr, .registration=TRUE)
 import("Formula")
 
+import("graphics", "stats", "Formula")
+
+importFrom("grDevices", "dev.interactive")
+importFrom("utils", "setTxtProgressBar", "txtProgressBar")
+
 importFrom("nlme", "fdHess")
 importFrom("car", "qqPlot")
 importFrom("geoR", "matern")

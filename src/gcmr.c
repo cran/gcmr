@@ -64,6 +64,7 @@ static const R_CallMethodDef CallMethods[] = {
 
 void R_init_gcmr(DllInfo *info) {
     R_registerRoutines(info, NULL, CallMethods, NULL, NULL);
+    R_useDynamicSymbols(info, FALSE);
 }
 
 

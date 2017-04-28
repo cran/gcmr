@@ -71,7 +71,7 @@ arguments passed to \code{\link{gcmr.options}}.
 }
 
 \details{
-Function \code{\link{gcmr}} computes maximum likelihood estimation in Gaussian copula marginal regression models. Computation of the exact likelihood is possible only for continuous responses, otherwise the likelihood function is approximated by importance sampling. See Masarotto and Varin (2012) for details.
+Function \code{\link{gcmr}} computes maximum likelihood estimation in Gaussian copula marginal regression models. Computation of the exact likelihood is possible only for continuous responses, otherwise the likelihood function is approximated by importance sampling. See Masarotto and Varin (2012; 2017) for details.
 
 Standard formula \code{y ~ x1 + x2} indicates that the mean response is modelled as a function of covariates \code{x1} and \code{x2} through an appropriate link function. Extended formula  \code{y ~ x1 + x2 | z1 + z2} indicates that the dispersion (or the shape) parameter of the marginal distribution is modelled as a function of covariates \code{z1} and \code{z2}. Dispersion (or shape) parameters are always modelled on logarithm scale. The model specification is inspired by beta regression as implemented in \code{\link{betareg}} (Cribari-Neto and Zeileis, 2010) through extended \code{\link{Formula}} objects (Zeileis and Croissant, 2010). 
 
@@ -114,6 +114,8 @@ Functions \code{\link{coefficients}}, \code{\link{logLik}}, \code{\link{fitted}}
 Cribari-Neto, F. and Zeileis, A. (2010). Beta regression in R. \emph{Journal of Statistical Software} \bold{34}, 1--24. \url{http://www.jstatsoft.org/v34/i02/}.
 
 Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
+
+Masarotto, G. and Varin C. (2017). Gaussian Copula Regression in R. \emph{Journal of Statistical Software}, \bold{77}(8), 1--26. \doi{10.18637/jss.v077.i08}.
 
 Rocha, A.V. and Cribari-Neto, F. (2009). Beta autoregressive moving average models. \emph{Test} \bold{18}, 529--545.
 

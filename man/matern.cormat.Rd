@@ -27,6 +27,8 @@ The Mat\'ern correlation function is inherited from the \code{geoR} package (Dig
 Diggle, P. and Ribeiro, P.J. (2007). \emph{Model-based Geostatistics}. Springer.
 
 Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
+
+Masarotto, G. and Varin C. (2017). Gaussian Copula Regression in R. \emph{Journal of Statistical Software}, \bold{77}(8), 1--26. \doi{10.18637/jss.v077.i08}.
 }
 \author{
 Guido Masarotto and Cristiano Varin.

@@ -1,20 +1,23 @@
-citHeader("To cite gcmr in publications use:")
+bibentry(bibtype = "Article",
+  title        = "Gaussian Copula Regression in {R}",
+  author       = c(person(given = "Guido",
+                          family = "Masarotto",
+                          email = "guido.masarotto@unipd.it"),
+                   person(given = "Cristiano",
+                          family = "Varin",
+                          email = "cristiano.varin@unive.it")),
+  journal      = "Journal of Statistical Software",
+  year         = "2017",
+  volume       = "77",
+  number       = "8",
+  pages        = "1--26",
+  doi          = "10.18637/jss.v077.i08",
 
-citEntry(entry = "Article",
-  title        = "Gaussian Copula Marginal Regression",
-  author       = personList(as.person("Guido Masarotto"),
-		   as.person("Cristiano Varin")),  
-  journal      = "Electronic Journal of Statistics", 
-  year         = "2012",
-  volume       = "6",
-  pages        = "1517--1549",
-  url	       = "http://projecteuclid.org/euclid.ejs/1346421603",
-  
-  textVersion  = 
-  paste("Guido Masarotto and Cristiano Varin (2012).", 
-	"Gaussian Copula Marginal Regression.",
-        "Electronic Journal of Statistics 6, 1517-1549.",
-        "URL http://projecteuclid.org/euclid.ejs/1346421603."),
-	
-  header       = "If you use gcmr(), please cite:"
+  header       = "To cite gcmr in publications use:",
+  textVersion  =
+  paste("Guido Masarotto, Cristiano Varin (2017).",
+        "Gaussian Copula Regression in R.",
+        "Journal of Statistical Software, 77(8), 1-26.",
+        "doi:10.18637/jss.v077.i08")
 )
+

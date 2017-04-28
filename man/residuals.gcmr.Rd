@@ -16,7 +16,7 @@
 \item{...}{further arguments passed to or from other methods.}
 }
 \description{
-  Computes various type of quantile residuals for validation of a fitted Gaussian copula marginal regression model, as described in Masarotto and Varin (2012).
+  Computes various type of quantile residuals for validation of a fitted Gaussian copula marginal regression model, as described in Masarotto and Varin (2012; 2017).
 }
 \details{
  Quantile residuals are defined in Dunn and Smyth (1996). Two different types are available:
@@ -24,7 +24,7 @@
 \code{conditional} \tab quantile residuals that account for the dependence. \cr
 \code{marginal} \tab quantile residuals that do not account for the dependence.
 }
-Conditional quantile residuals are normal quantiles of Rosenblatt (1952) transformations and they are appropriate for validation of the marginal regression models discussed in Masarotto and Varin (2012). If the responses are discrete, then the conditional quantile residuals are not well defined. This difficulty is overcame by randomized quantile residuals available through option \code{method="random"}. Alternatively, Zucchini and MacDonald (2009) suggest the use of mid interval quantile residuals (\code{method="mid"}). 
+Conditional quantile residuals are normal quantiles of Rosenblatt (1952) transformations and they are appropriate for validation of the marginal regression models discussed in Masarotto and Varin (2012; 2017). If the responses are discrete, then the conditional quantile residuals are not well defined. This difficulty is overcame by randomized quantile residuals available through option \code{method="random"}. Alternatively, Zucchini and MacDonald (2009) suggest the use of mid interval quantile residuals (\code{method="mid"}). 
 }
 \seealso{
   \code{\link{gcmr}}
@@ -33,6 +33,8 @@ Conditional quantile residuals are normal quantiles of Rosenblatt (1952) transfo
 Dunn, P.K. and Smyth, G.K. (1996). Randomized quantile residuals. \emph{Journal of Computational and Graphical Statistics} \bold{5}, 236--244.
 
 Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
+
+Masarotto, G. and Varin C. (2017). Gaussian Copula Regression in R. \emph{Journal of Statistical Software}, \bold{77}(8), 1--26. \doi{10.18637/jss.v077.i08}.
 
 Rosenblatt, M. (1952). Remarks on a multivariate transformation. \emph{The Annals of Mathematical Statistics} \bold{23}, 470--472.
 
@@ -46,7 +48,7 @@ Differently from randomized quantile residuals, mid quantile residuals are \bold
 
 It is appropriate to inspect several sets of randomized quantile residuals before to take a decision about the model.
 
-See Masarotto and Varin (2012) for more details.
+See Masarotto and Varin (2012; 2017) for more details.
 }
 \examples{
 ## spatial binomial data

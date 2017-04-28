@@ -33,10 +33,11 @@ The plot method for \code{\link{gcmr}} objects produces six types of diagnostic 
 The normal probability plot is computed via function \code{\link{qqPlot}} from the package \code{\link{car}} (Fox and Weisberg, 2011).
 }
 \references{
-Fox, J. and Weisberg, S. (2011). \emph{An {R} Companion to Applied Regression}. Second Edition. Thousand Oaks CA: Sage. \url{http://socserv.socsci.mcmaster.ca/jfox/Books/Companion}
-
+Fox, J. and Weisberg, S. (2011). \emph{An {R} Companion to Applied Regression}. Second Edition. Thousand Oaks CA: Sage. \url{http://socserv.socsci.mcmaster.ca/jfox/Books/Companion}.
 
 Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
+
+Masarotto, G. and Varin C. (2017). Gaussian Copula Regression in R. \emph{Journal of Statistical Software}, \bold{77}(8), 1--26. \doi{10.18637/jss.v077.i08}.
 }
 \author{
 Guido Masarotto and Cristiano Varin.
