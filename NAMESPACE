@@ -1,5 +1,4 @@
 useDynLib(gcmr, .registration=TRUE)
-import("Formula")
 
 import("graphics", "stats", "Formula")
 

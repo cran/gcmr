@@ -1,10 +1,10 @@
-50637cc947b7113f2dc33270d6407dad *DESCRIPTION
-47896563bff61e77b6a0c22177b8c278 *NAMESPACE
-d75aaf5e2ecaed4e4e6f6a589862da05 *NEWS
+b106535d87d367c4374b3cdd7f85f087 *DESCRIPTION
+3aa6c9773fcd381eee0f9913e6cdf813 *NAMESPACE
+87b171375286907637e404543ce82626 *NEWS
 698463c33206989de8ba1d8b16510616 *R/cormat.R
 9ef165c54001f34de7705471ba3aa9ed *R/gcmr.R
 a83a26c6295b33275241225fc1853c52 *R/marginals.R
-bcf4a1ecd49d4f3f6e57d20970f3db7d *build/partial.rdb
+aaefc31d6fc30086142e02786a8638ab *build/partial.rdb
 ea7a47d12a35b22eb600f2ecb90f03b1 *data/HUR.RData
 8208ae3e580f05c57d3154db0720b68f *data/epilepsy.RData
 24720557ad2dd953d494d589e063c480 *data/malaria.RData
@@ -24,7 +24,7 @@ d2c4b71b0375e04809c0a4874d009611 *man/gcmr.Rd
 10cfb2ea088e818362503fb459f4d5f8 *man/malaria.Rd
 ddebd187a8aad0feda0bb406dac6e96b *man/marginal.gcmr.Rd
 760a6d20545e2dc8f100f5b150837c30 *man/matern.cormat.Rd
-303874be665a6bf6420a149a48cb7b37 *man/plot.gcmr.Rd
+12e19cdb9bef2eef7b53b59f50e7a0be *man/plot.gcmr.Rd
 25f5e5fa584c1f7052cc6cdfd20f18b6 *man/polio.Rd
 4287ae7cf7d85a4cf828676349c4b9c4 *man/profile.gcmr.Rd
 e72dbe668a05345f497ab5afcc9a044a *man/residuals.gcmr.Rd
