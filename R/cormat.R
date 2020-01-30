@@ -100,10 +100,11 @@ matern.cormat <- function(D, alpha=0.5) {
         tau
     }
     ans$chol <- function( tau, not.na ){
-        S <- geoR::matern(D, tau, alpha)
+        S <- .matern(D, tau, alpha)
         q <- try(chol(S[not.na,not.na]),silent=TRUE)
         if( inherits(q,"try-error") ) NULL else q
     }
     class( ans ) <- c("matern.gcmr", "cormat.gcmr")
     ans
 }
+

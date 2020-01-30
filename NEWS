@@ -1,13 +1,16 @@
+Version 1.0.2
+-------------
+- removed dependence on the orphaned geoR 
+
 Version 1.0.1
 -------------
-- Minor fixes introduced for CRAN compatibility (methods is no more imported,
+- Minor fixes introduced for CRAN compatibility (methods are no more imported,
   modified the citation of the car package)
 
 Version 1.0.0
 -------------
 - published version: Masarotto, G. and Varin C. (2017). Gaussian Copula Regression in R.  Journal of Statistical Software, 77(8), 1--26. doi:10.18637/jss.v077.i08
 - included 'grDevices', 'utils', 'graphics', 'stats', 'Formula' in imports
-
 
 Version 0.7.5
 -------------
@@ -38,7 +41,7 @@ Version 0.6.1
 
 Versin 0.6.0
 -------------
-- extended formula for dispersion modeling
+- extended formula for dispersion modelling
 - beta regression model
 
 Version 0.5.1

@@ -7,7 +7,6 @@ importFrom("utils", "setTxtProgressBar", "txtProgressBar")
 
 importFrom("nlme", "fdHess")
 importFrom("car", "qqPlot")
-importFrom("geoR", "matern")
 importFrom("betareg", "betareg.fit")
 importFrom("sandwich", "estfun")
 importFrom("sandwich", "bread")

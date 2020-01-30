@@ -133,15 +133,15 @@ gradcheck <- function(x, options=x$options) {
     sum(g*solve(crossprod(j),g))
 }
 
-gcmr.opt <- function(start, loglik, lower, upper) {
-    fn.opt <- function(x){
-        if( any(x <= lower || x >= upper) ) NA
-        else  -sum(loglik(x))
-    }
-    ans <- optim(start, fn.opt, method="BFGS")
-    if(ans$convergence) warning(paste("optim exits with code",ans$convergence))
-    list(estimate=ans$par,maximum=ans$value,convergence=ans$convergence)
-}
+#gcmr.opt <- function(start, loglik, lower, upper) {
+    #fn.opt <- function(x){
+        #if( any( (x <= lower) | (x >= upper) ) ) NA
+        #else  -sum(loglik(x))
+    #}
+    #ans <- optim(start, fn.opt, method="BFGS")
+    #if(ans$convergence) warning(paste("optim exits with code",ans$convergence))
+    #list(estimate=ans$par,maximum=ans$value,convergence=ans$convergence)
+#}
 
 gcmr.options <- function(seed=round(runif(1,1,100000)), nrep=c(100,1000),
                          no.se=FALSE, method=c("BFGS", "Nelder-Mead", "CG"), ...) {
@@ -150,12 +150,12 @@ gcmr.options <- function(seed=round(runif(1,1,100000)), nrep=c(100,1000),
     control <- list(...)
     opt <- function(start, loglik, lower, upper) {
         fn.opt <- function(x){
-            if( any(x <= lower || x >= upper) ) NA
+            if( any(x <= lower | x >= upper) ) NA
             else  -sum(loglik(x))
         }
         ans <- optim(start, fn.opt, method=method, control=control)
         if(ans$convergence) warning(paste("optim exits with code",ans$convergence))
-    list(estimate=ans$par,maximum=ans$value,convergence=ans$convergence)
+        list(estimate=ans$par,maximum=ans$value,convergence=ans$convergence)
     }
     list(seed=seed,nrep=nrep,no.se=no.se,opt=opt,method=method)
 }

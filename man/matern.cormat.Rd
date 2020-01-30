@@ -34,7 +34,7 @@ Masarotto, G. and Varin C. (2017). Gaussian Copula Regression in R. \emph{Journa
 Guido Masarotto and Cristiano Varin.
 }
 \seealso{
-\code{\link{gcmr}}, \code{\link{matern}}.
+\code{\link{gcmr}}.
 }
 \keyword{regression}
 \keyword{nonlinear}
