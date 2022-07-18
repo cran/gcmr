@@ -76,7 +76,7 @@ static void csampler( int *ipar, double *chol, double *limits, double *llik) {
     int g, ig, ng, r , i, j , ij , n = ipar[0] , m = ipar[1] , nstrata = ipar[2],
 	*lstrata = ipar + 3;
     double *a = limits, *b = limits+n, ZERO=0, ONE=1, yi, cii , sup,
-	lk , plow, pup, z, mw, s2, mwold, biasold, EPS = sqrt(DOUBLE_EPS), EPS1=1-EPS,
+	lk , plow, pup, z, mw, s2, mwold, biasold, EPS = sqrt(DBL_EPSILON), EPS1=1-EPS,
 	*w = (double *) R_alloc(n*m+m,sizeof(double)), *x=w+m, *xr;
     GetRNGstate();
     for ( g=0, i=0 ; g < nstrata ; g++) {
@@ -127,7 +127,7 @@ static void bsolver( int *ipar, double *chol, double *limits, double *llik) {
     int g, ig, ng, i, j , ij , n = ipar[0] , nstrata = ipar[2],
 	*lstrata = ipar + 3;
     double *a = limits, *b = limits+n, ZERO=0, ONE=1, TWO=2, yi, cii, z, 
-	*es = b, EPS = sqrt(DOUBLE_EPS), EPS1=1-EPS;
+	*es = b, EPS = sqrt(DBL_EPSILON), EPS1=1-EPS;
     for ( g=0, i=0 ; g<nstrata ; g++) {
 	ng = lstrata[g] ;
 	for ( ig=0 ; ig<ng ; ig++, i++) {

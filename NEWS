@@ -1,3 +1,7 @@
+Version 1.0.3
+-------------
+- replaced dDOUBLE_EPS with DBL_EPSILON 
+
 Version 1.0.2
 -------------
 - removed dependence on the orphaned geoR 

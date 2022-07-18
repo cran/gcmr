@@ -111,15 +111,15 @@ An object of class \code{"gcmr"} with the following components:
 Functions \code{\link{coefficients}}, \code{\link{logLik}}, \code{\link{fitted}}, \code{\link{vcov.gcmr}} and \code{\link{residuals.gcmr}} can be used to extract various useful features of the value returned by \code{\link{gcmr}}. Function \code{\link{plot.gcmr}} produces various diagnostic plots for fitted \code{gcmr} objects.
 }
 \references{
-Cribari-Neto, F. and Zeileis, A. (2010). Beta regression in R. \emph{Journal of Statistical Software} \bold{34}, 1--24. \url{http://www.jstatsoft.org/v34/i02/}.
+Cribari-Neto, F. and Zeileis, A. (2010). Beta regression in R. \emph{Journal of Statistical Software} \bold{34}, 1--24. 
 
-Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. \url{http://projecteuclid.org/euclid.ejs/1346421603}.
+Masarotto, G. and Varin, C. (2012). Gaussian copula marginal regression. \emph{Electronic Journal of Statistics} \bold{6}, 1517--1549. 
 
-Masarotto, G. and Varin C. (2017). Gaussian Copula Regression in R. \emph{Journal of Statistical Software}, \bold{77}(8), 1--26. \doi{10.18637/jss.v077.i08}.
+Masarotto, G. and Varin C. (2017). Gaussian Copula Regression in R. \emph{Journal of Statistical Software}, \bold{77}(8), 1--26. 
 
 Rocha, A.V. and Cribari-Neto, F. (2009). Beta autoregressive moving average models. \emph{Test} \bold{18}, 529--545.
 
-Zeileis, A. and Croissant, Y. (2010). Extended model formulas in R: Multiple parts and multiple responses. \emph{Journal of Statistical Software} \bold{34}, 1--13. \url{http://www.jstatsoft.org/v34/i01/}.
+Zeileis, A. and Croissant, Y. (2010). Extended model formulas in R: Multiple parts and multiple responses. \emph{Journal of Statistical Software} \bold{34}, 1--13. 
 }
 \author{
 Guido Masarotto and Cristiano Varin.
