@@ -1,3 +1,7 @@
+Version 1.0.4
+-------------
+- fixed Rd files and CITATION
+
 Version 1.0.3
 -------------
 - replaced dDOUBLE_EPS with DBL_EPSILON 

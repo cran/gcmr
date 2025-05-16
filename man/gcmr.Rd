@@ -22,7 +22,7 @@ a symbolic description of the model to be fitted of type \code{y ~ x} or
 }
 
 \item{data}{
-an optional data frame, list or environment (or object coercible by \code{\link{as.data.frame}} to a data frame) containing the variables in the model.  If not found in \code{data}, the variables are taken from \code{environment(formula)}.
+an optional data frame, list or environment (or object coercible by \code{\link[base]{as.data.frame}} to a data frame) containing the variables in the model.  If not found in \code{data}, the variables are taken from \code{environment(formula)}.
 }
 
 \item{subset}{
@@ -73,7 +73,7 @@ arguments passed to \code{\link{gcmr.options}}.
 \details{
 Function \code{\link{gcmr}} computes maximum likelihood estimation in Gaussian copula marginal regression models. Computation of the exact likelihood is possible only for continuous responses, otherwise the likelihood function is approximated by importance sampling. See Masarotto and Varin (2012; 2017) for details.
 
-Standard formula \code{y ~ x1 + x2} indicates that the mean response is modelled as a function of covariates \code{x1} and \code{x2} through an appropriate link function. Extended formula  \code{y ~ x1 + x2 | z1 + z2} indicates that the dispersion (or the shape) parameter of the marginal distribution is modelled as a function of covariates \code{z1} and \code{z2}. Dispersion (or shape) parameters are always modelled on logarithm scale. The model specification is inspired by beta regression as implemented in \code{\link{betareg}} (Cribari-Neto and Zeileis, 2010) through extended \code{\link{Formula}} objects (Zeileis and Croissant, 2010). 
+Standard formula \code{y ~ x1 + x2} indicates that the mean response is modelled as a function of covariates \code{x1} and \code{x2} through an appropriate link function. Extended formula  \code{y ~ x1 + x2 | z1 + z2} indicates that the dispersion (or the shape) parameter of the marginal distribution is modelled as a function of covariates \code{z1} and \code{z2}. Dispersion (or shape) parameters are always modelled on logarithm scale. The model specification is inspired by beta regression as implemented in \code{\link[betareg]{betareg}} (Cribari-Neto and Zeileis, 2010) through extended \code{\link[Formula]{Formula}} objects (Zeileis and Croissant, 2010). 
 
 For binomial marginals specified by \code{\link{binomial.marg}} the response is specified as a factor when the first level denotes failure and all others success or as a two-column matrix with the columns giving the numbers of successes and failures. 
 
@@ -125,7 +125,7 @@ Zeileis, A. and Croissant, Y. (2010). Extended model formulas in R: Multiple par
 Guido Masarotto and Cristiano Varin.
 }
 \seealso{
-\code{\link{cormat.gcmr}}, \code{\link{marginal.gcmr}}, \code{\link{gcmr.options}}, \code{\link{Formula}}, \code{\link{betareg}}.
+\code{\link{cormat.gcmr}}, \code{\link{marginal.gcmr}}, \code{\link{gcmr.options}}, \code{\link[Formula]{Formula}}, \code{\link[betareg]{betareg}}.
 }
 \examples{
 ## negative binomial model for longitudinal data

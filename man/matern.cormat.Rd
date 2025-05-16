@@ -14,7 +14,7 @@ matern.cormat(D, alpha = 0.5)
 matrix with values of the distances between pairs of data locations.
 }
   \item{alpha}{
-value of the shape parameter of the Matern correlation class. The default {alpha = 0.5} corresponds to an exponential correlation model. 
+value of the shape parameter of the Matern correlation class. The default \code{alpha = 0.5} corresponds to an exponential correlation model. 
 }
 }
 \value{

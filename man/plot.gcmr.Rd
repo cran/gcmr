@@ -30,7 +30,7 @@
 \details{
 The plot method for \code{\link{gcmr}} objects produces six types of diagnostic plots selectable through the \code{which} argument. Available choices are: Quantile residuals vs indices of the observations (\code{which=1}); Quantile residuals vs linear predictor (\code{which=2}); Normal probability plot of quantile residuals (\code{which=3}); Fitted vs observed values (\code{which=4}); Autocorrelation plot of quantile residuals (\code{which=5}); Partial autocorrelation plot of quantile residuals (\code{which=6}). The latter two plots make sense for regular time series data only.
 
-The normal probability plot is computed via function \code{\link{qqPlot}} from the package \code{car} (Fox and Weisberg, 2011).
+The normal probability plot is computed via function \code{\link[car]{qqPlot}} from the package \code{car} (Fox and Weisberg, 2011).
 }
 \references{
 Fox, J. and Weisberg, S. (2011). \emph{An {R} Companion to Applied Regression}. Second Edition. Thousand Oaks CA: Sage. 

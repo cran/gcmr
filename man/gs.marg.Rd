@@ -28,11 +28,11 @@ weibull.marg(link = "log")
 
 \arguments{
   \item{link}{
-a specification for the model link function. See \code{\link{family}} for the special case of generalized linear models. 
+a specification for the model link function. See \code{\link[stats]{family}} for the special case of generalized linear models. 
 }
 }
 \details{
-Beta marginals specified by \code{beta.marg} are parametrized in terms of mean and dispersion as in \code{\link{betareg}}. See Cribari-Neto and Zeileis (2010) and Ferrari and Cribari-Neto (2004). 
+Beta marginals specified by \code{beta.marg} are parametrized in terms of mean and dispersion as in \code{\link[betareg]{betareg}}. See Cribari-Neto and Zeileis (2010) and Ferrari and Cribari-Neto (2004). 
 
 For binomial marginals specified by \code{binomial.marg}, the response is specified as a factor when the first level denotes failure and all others success or as a two-column matrix with the columns giving the numbers of successes and failures.
 
@@ -56,7 +56,7 @@ Masarotto, G. and Varin C. (2017). Gaussian Copula Regression in R. \emph{Journa
 Guido Masarotto and Cristiano Varin.
 }
 \seealso{
-\code{\link{gcmr}}, \code{\link{betareg}}.
+\code{\link{gcmr}}, \code{\link[betareg]{betareg}}.
 }
 \keyword{regression}
 \keyword{nonlinear}

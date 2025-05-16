@@ -21,10 +21,10 @@ Monte Carlo size of the importance sampling algorithm  for likelihood approximat
 logical. Should standard errors be computed and returned or not?
 }
   \item{method}{
-   a character string specifying the method argument passed to \code{optim}. The default optimization routine is the quasi-Newton algorithm \code{BFGS}. See \code{\link{optim}} for details. 
+   a character string specifying the method argument passed to \code{optim}. The default optimization routine is the quasi-Newton algorithm \code{BFGS}. See \code{\link[stats]{optim}} for details. 
 }
 \item{...}{
-arguments passed to \code{\link{optim}}.
+arguments passed to \code{\link[stats]{optim}}.
 }
 }
 \value{

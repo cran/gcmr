@@ -39,7 +39,7 @@ The function \code{summary.gcmr} returns an object of class "summary.glm", a lis
 \item{coefficients}{a list with components \code{marginal} and \code{copula} containing the maximum likelihood estimates of the marginal and Gaussian copula parameters, respectively.}
 \item{aic}{Akaike Information Criterion.}
 
-Function \code{\link{coef}} returns the estimated coefficients and \code{\link{vcov}} their variance-covariance matrix. Functions \code{\link{bread}} and \code{\link{estfun}} extract the components of the robust sandwich variance matrix that can be computed with the \code{\link{sandwich}} package (Zeileis, 2004; 2006).
+Function \code{\link[stats]{coef}} returns the estimated coefficients and \code{\link[stats]{vcov}} their variance-covariance matrix. Functions \code{\link[sandwich]{bread}} and \code{\link[sandwich]{estfun}} extract the components of the robust sandwich variance matrix that can be computed with the \code{\link[sandwich]{sandwich}} package (Zeileis, 2004; 2006).
 }
 \references{
 Zeileis, A. (2004). Econometric computing with HC and HAC covariance matrix estimators. \emph{Journal of Statistical Software} \bold{11}, issue 10.
@@ -50,7 +50,7 @@ Zeileis, A. (2006). Object-oriented computation of sandwich estimators. \emph{Jo
 Guido Masarotto and Cristiano Varin.
 }
 \seealso{
-\code{\link{bread}}, \code{\link{estfun}}, \code{\link{gcmr}}, \code{\link{sandwich}}.
+\code{\link[sandwich]{bread}}, \code{\link[sandwich]{estfun}}, \code{\link{gcmr}}, \code{\link[sandwich]{sandwich}}.
 }
 \examples{
 data(epilepsy)
